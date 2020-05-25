@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="maxy612的个人博客">
 <meta property="og:description" content="1. https 比 http 安全在哪详见https 比 http 安全在哪  2. mouseover 和 mouseenter 区别mouseover: 鼠标移入事件所绑定的元素及其子元素时触发mouseenter: 鼠标移入事件所绑定的元素时触发（不含子元素）当在一个父元素上添加 mouseover 事件和 mouseenter 事件，分别打印 mouseover 和 mouseenter">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-25T11:52:39.083Z">
+<meta property="og:updated_time" content="2020-05-25T12:06:10.148Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试题系列">
 <meta name="twitter:description" content="1. https 比 http 安全在哪详见https 比 http 安全在哪  2. mouseover 和 mouseenter 区别mouseover: 鼠标移入事件所绑定的元素及其子元素时触发mouseenter: 鼠标移入事件所绑定的元素时触发（不含子元素）当在一个父元素上添加 mouseover 事件和 mouseenter 事件，分别打印 mouseover 和 mouseenter">
@@ -80,11 +80,11 @@
 <p>此时，当鼠标由外界划入 parent 然后再划入 child，再划出 child，再划出 parent。输出顺序如下：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mouseover mouseenter 鼠标划入parent</span></span><br><span class="line"><span class="comment">// mouseover 鼠标由parent划入child</span></span><br><span class="line"><span class="comment">// mouseover 鼠标由child划入parent</span></span><br></pre></td></tr></table></figure>
 <hr>
-<h3 id="标签中-async-和-defer-的作用"><a href="#标签中-async-和-defer-的作用" class="headerlink" title="标签中 async 和 defer 的作用"></a><script>标签中 async 和 defer 的作用</h3><p>在浏览器解析 html 文档构建 dom 树的过程中，如果遇到了 script 标签，正常情况下会暂停 dom 树构建，去请求 script 中的资源并且执行，这样会阻塞 dom 树的构建进而影响渲染。</p>
+<h3 id="3-“script”-标签中-“async”-和-“defer”-的作用"><a href="#3-“script”-标签中-“async”-和-“defer”-的作用" class="headerlink" title="3. “script” 标签中 “async” 和 “defer” 的作用"></a>3. “script” 标签中 “async” 和 “defer” 的作用</h3><p>在浏览器解析 html 文档构建 dom 树的过程中，如果遇到了 script 标签，正常情况下会暂停 dom 树构建，去请求 script 中的资源并且执行，这样会阻塞 dom 树的构建进而影响渲染。</p>
 <p>async 和 defer 表示该 script 中的资源为非关键资源，使得浏览器异步加载对应的 script 资源，降低对 dom 树构建过程的阻塞。</p>
 <p>不同的是，async: 异步加载 js 资源，加载完之后立即执行；defer: 异步加载 js 资源，在 DOMContentLoaded 事件之前执行</p>
 <hr>
-</script></h3>
+
       
     </div>
     <footer class="article-footer">
