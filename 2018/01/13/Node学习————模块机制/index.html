@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Node学习————模块机制 | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="关于node的模块机制，我主要说三个问题：  为什么node会有模块机制？ node的模块机制是什么呢？ 模块机制为我们带来了什么？    为什么node会有模块机制？首先要说明的是，node是javascript，而早期的javascript作为脚本语言，主要用于处理网页的交互，修改dom，它的主要引入方式是通过。对于一般的复杂度低的页面交互和处理，已经够用了。但是它不能像其它语言一样开发大型应">
+<meta name="keywords" content="node">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node学习————模块机制">
+<meta property="og:url" content="https://maxy612.github.io/2018/01/13/Node学习————模块机制/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="关于node的模块机制，我主要说三个问题：  为什么node会有模块机制？ node的模块机制是什么呢？ 模块机制为我们带来了什么？    为什么node会有模块机制？首先要说明的是，node是javascript，而早期的javascript作为脚本语言，主要用于处理网页的交互，修改dom，它的主要引入方式是通过。对于一般的复杂度低的页面交互和处理，已经够用了。但是它不能像其它语言一样开发大型应">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-25T11:31:00.535Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node学习————模块机制">
+<meta name="twitter:description" content="关于node的模块机制，我主要说三个问题：  为什么node会有模块机制？ node的模块机制是什么呢？ 模块机制为我们带来了什么？    为什么node会有模块机制？首先要说明的是，node是javascript，而早期的javascript作为脚本语言，主要用于处理网页的交互，修改dom，它的主要引入方式是通过。对于一般的复杂度低的页面交互和处理，已经够用了。但是它不能像其它语言一样开发大型应">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Node学习————模块机制" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/13/Node学习————模块机制/" class="article-date">
+  <time datetime="2018-01-13T12:41:41.000Z" itemprop="datePublished">2018-01-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Node学习————模块机制
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>关于node的模块机制，我主要说三个问题：</p>
+<ol>
+<li>为什么node会有模块机制？</li>
+<li>node的模块机制是什么呢？</li>
+<li>模块机制为我们带来了什么？</li>
+</ol>
+<hr>
+<ol>
+<li><p>为什么node会有模块机制？<br>首先要说明的是，node是javascript，而早期的javascript作为脚本语言，主要用于处理网页的交互，修改dom，它的主要引入方式是通过<script src=""></script>。对于一般的复杂度低的页面交互和处理，已经够用了。但是它不能像其它语言一样开发大型应用。其中一个原因是因为它缺乏对文件有效的管理和组织。如果js文件之间有引用，通常是暴露全局变量，利用加载顺序来调用。对于其它适合开发大型应用的语言（java, python, c/c++等）来说，它们都可以通过自身的模块机制对代码进行抽象封装，实行有效的组织管理。相比之下，javascript缺乏模块系统，一定程度上限制了它的能力。但是对于javascript的探索，社区在不断地尝试javascript在服务端的应用，提出了commonjs规范。node在开发时参考了commonjs的模块系统规范，实现了javascript的模块系统，与npm相配合，大大拓展了javascript的能力。</p>
+</li>
+<li><p>node的模块机制是什么？<br>首先，模块机制不是nodejs独有的，在java中有类文件，python中有import,php中有include和require,这些都是模块机制。node的模块机制是以commonjs规范为基础的文件组织管理系统，它便利了我们对javascript文件组织和调用，同时为单个javascript提供了独立的作用域。</p>
+<p>在node中调用模块，主要包含三个步骤：路径分析-&gt;文件定位-&gt;编译执行。我们在使用require引入文件时，需要在require()中传入引用文件的路径，一个文件就是一个模块。模块分为核心模块和文件模块。核心模块是node自带的模块，底层一般是基于c/c++，在node源代码编译时被编译为二进制文件。在调用核心模块时，核心模块文件会直接被加载进内存中且无需编译，速度快。文件模块是用户编写的文件。一般来说，单个文件就可以视为一个模块，可以通过require进行调用，这类模块在调用时需要先通过传入的路径进行文件定位，找到对应的文件后进行同步编译执行，然后返回给调用者，在调用时它是从磁盘调取的，因而速度较核心模块慢。</p>
+<p>无论是核心模块还是文件模块，都有模块缓存机制。在初次加载模块后，node会对它们进行缓存，存在NativeModule._cache和Module._cache中。再次加载时，会自动从缓存中加载模块，能极大的提高模块调用的效率。</p>
+<p>路径分析中，node会对传入require的路径进行解析，一般有require(‘fs’)，require(‘./a’)，require(‘/b’)的形式，第一种一般是加载核心模块或第三方模块，第二三种是加载用户自己的本地模块。第一类的模块查找中，会从当前目录的node_modules开始查，如果没有，依次查找父级目录的node_modules目录直到根目录，当然，核心模块直接从内存中查找。第二类是查找当前目录下的a.js或a.json或a.node文件。第三类是从根目录查找文件。<br>定位到对应目录后，进行文件定位。require后的路径中，可以加文件后缀，也可以不加。但是还是加上好，这样node就可以直接查找文件。如果没有加扩展名，node将会依次查找定位目录下的js，json，node文件。比如require(‘./a’)，会依次查找当前目录下a.js，a.json，a.node，由于判断文件存在的过程是通过fs同步加载文件来判断的，因而会影响效率，所以最好是指明后缀。如果没有发现文件，发现了a目录，将会查找a目录的package.json文件，通过JSON.parse找到json文件的main，如果不存在main属性或者package.json文件不存在，会依次查找a目录下的index.js，index.json，index.node文件。</p>
+<p>定位到文件以后，node会建立一个模块对象，然后根据载入路径来编译和执行。对于.js，.json，.node文件，有不同的加载和执行策略。对于js文件，会利用fs.readFileSync进行同步读取和编译，而对于json文件，通过fs同步读取文件后将文件内容通过JSON.parse进行格式化后返回结果。对于node文件，通过process.dlopen来动态加载编译生成的文件。在每个文件的require对象下，有extensions属性，里边有对’.js’，’.json’，’.node’文件的处理函数，可以验证上边所说的不同文件的加载和执行策略。</p>
+<p>在写js文件时，我们可以直接使用require,但是我们之前并没有定义过，这就涉及到模块机制的js解析编译过程。在我们写的js文件内容之上，node会在编译时会将我们写的内容提取出来，然后在内容的前后分别加上</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">exports, require, module, __filename, __dirname</span>) </span>&#123;</span><br><span class="line">   <span class="comment">// ...</span></span><br><span class="line">   exports.length = <span class="number">30</span>;</span><br><span class="line">&#125;)</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+<p>中间引号省略的是内容，然后通过node内置的vm模块的runInThisContext（类似于eval）方法运行处理后的内容，生成一个函数，然后将当前模块对象的exports, require, module, <strong>dirname, </strong>filename传入函数，最后返回exports给调用者。所以我们通过require可以获得所调用模块的exports对象。</p>
+</li>
+<li><p>模块机制为我们带来了什么？<br>通过利用node的模块机制，我们能够很方便的组织js文件，为我们利用javascript开发大型应用，客户端提供了可能。仅仅有node的模块系统还不够，我们只能在本地管理利用自己开发的模块。对于他人开发的优秀的第三方模块，我们不能直接使用。npm作为node的包管理工具，使我们可以利用第三方模块完成日常的开发工作，同时我们也可以发布自己的模块到npm上，供他人使用。npm的出现也使得javascript的社区更加强大，资源更加丰富。利用这些，我们能够做更多好玩的东西了。</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/01/15/Node学习————异步IO/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Node学习————异步IO
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/12/13/常见排序算法（2）/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">常见排序算法（2）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

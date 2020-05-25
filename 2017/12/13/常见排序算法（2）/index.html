@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>常见排序算法（2） | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文主要讲一下复杂度为O(nlogn)的算法及其优化。 1. 归并排序及其优化2. 快速排序及其优化3. 堆排序及其优化 归并排序及其优化归并排序，简而言之就是先拆分再合并。把数组从中间不断地拆分，最后成为单个元素，然后元素相邻两两比较，合并成数组，然后相邻数组比较，继续合并，依次类推，直到数组合并完成。如图所示：  下面用JavaScript做下实现：1234567891011121314151">
+<meta name="keywords" content="数据结构与算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见排序算法（2）">
+<meta property="og:url" content="https://maxy612.github.io/2017/12/13/常见排序算法（2）/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="本文主要讲一下复杂度为O(nlogn)的算法及其优化。 1. 归并排序及其优化2. 快速排序及其优化3. 堆排序及其优化 归并排序及其优化归并排序，简而言之就是先拆分再合并。把数组从中间不断地拆分，最后成为单个元素，然后元素相邻两两比较，合并成数组，然后相邻数组比较，继续合并，依次类推，直到数组合并完成。如图所示：  下面用JavaScript做下实现：1234567891011121314151">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://maxy612.github.io/images/mergeSort.gif">
+<meta property="og:image" content="https://maxy612.github.io/images/quickSort.gif">
+<meta property="og:image" content="https://maxy612.github.io/images/heap.gif">
+<meta property="og:image" content="https://maxy612.github.io/images/table.png">
+<meta property="og:updated_time" content="2020-05-25T11:31:00.537Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常见排序算法（2）">
+<meta name="twitter:description" content="本文主要讲一下复杂度为O(nlogn)的算法及其优化。 1. 归并排序及其优化2. 快速排序及其优化3. 堆排序及其优化 归并排序及其优化归并排序，简而言之就是先拆分再合并。把数组从中间不断地拆分，最后成为单个元素，然后元素相邻两两比较，合并成数组，然后相邻数组比较，继续合并，依次类推，直到数组合并完成。如图所示：  下面用JavaScript做下实现：1234567891011121314151">
+<meta name="twitter:image" content="https://maxy612.github.io/images/mergeSort.gif">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-常见排序算法（2）" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/13/常见排序算法（2）/" class="article-date">
+  <time datetime="2017-12-13T02:30:59.000Z" itemprop="datePublished">2017-12-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/学习/">学习</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      常见排序算法（2）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文主要讲一下复杂度为O(nlogn)的算法及其优化。</p>
+<h5 id="1-归并排序及其优化"><a href="#1-归并排序及其优化" class="headerlink" title="1. 归并排序及其优化"></a>1. 归并排序及其优化</h5><h5 id="2-快速排序及其优化"><a href="#2-快速排序及其优化" class="headerlink" title="2. 快速排序及其优化"></a>2. 快速排序及其优化</h5><h5 id="3-堆排序及其优化"><a href="#3-堆排序及其优化" class="headerlink" title="3. 堆排序及其优化"></a>3. 堆排序及其优化</h5><hr>
+<h4 id="归并排序及其优化"><a href="#归并排序及其优化" class="headerlink" title="归并排序及其优化"></a>归并排序及其优化</h4><p>归并排序，简而言之就是先拆分再合并。把数组从中间不断地拆分，最后成为单个元素，然后元素相邻两两比较，合并成数组，然后相邻数组比较，继续合并，依次类推，直到数组合并完成。<br>如图所示：</p>
+<img src="/images/mergeSort.gif" title="[400] [title 归并排序]">
+<p>下面用JavaScript做下实现：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_mergeSort</span>(<span class="params">arr, l, r</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 当数组被拆的只剩下一个元素，就返回</span></span><br><span class="line">  <span class="keyword">if</span> (l &gt;= r) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> mid = <span class="built_in">Math</span>.floor((l + r) / <span class="number">2</span>);</span><br><span class="line">  _mergeSort(arr, l, mid);</span><br><span class="line">  _mergeSort(arr, mid + <span class="number">1</span>, r);</span><br><span class="line">  _merge(arr, l, mid, r);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_merge</span>(<span class="params">arr, l, mid, r</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> temp = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; r - l + <span class="number">1</span>; i ++) &#123;</span><br><span class="line">    temp[i] = arr[i + l];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> i = l, j = mid + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> k = l; k &lt;= r; k ++ ) &#123;</span><br><span class="line">    <span class="keyword">if</span> (j &gt; r) &#123;</span><br><span class="line">      arr[k] = temp[i - l];</span><br><span class="line">      i ++;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (i &gt; mid) &#123;</span><br><span class="line">      arr[k] = temp[j - l];</span><br><span class="line">      j ++;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (temp[i - l] &gt; temp[j - l]) &#123;</span><br><span class="line">      arr[k] = temp[j - l];</span><br><span class="line">      j ++;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      arr[k] = temp[i - l];</span><br><span class="line">      i ++;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mergeSort = <span class="function"><span class="params">arr</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> n = arr.length;</span><br><span class="line"></span><br><span class="line">  _mergeSort(arr, <span class="number">0</span>, n - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> utils = <span class="built_in">require</span>(<span class="string">'./../utils'</span>);</span><br><span class="line"><span class="keyword">let</span> n = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">let</span> arr = utils.getRandomArray(n, <span class="number">0</span>, n);</span><br><span class="line"><span class="built_in">console</span>.log(arr); <span class="comment">// [ 2, 8, 0, 1, 3, 5, 5, 3, 6, 0 ]</span></span><br><span class="line">mergeSort(arr);</span><br><span class="line"><span class="built_in">console</span>.log(arr); <span class="comment">// [ 0, 0, 1, 2, 3, 3, 5, 5, 6, 8 ]</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>第一版归并排序就是这样，当然，它也有可以优化的空间。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在这里测试一下归并排序和插入排序的性能</span></span><br><span class="line"><span class="keyword">let</span> utils = <span class="built_in">require</span>(<span class="string">'./../utils'</span>);</span><br><span class="line"><span class="keyword">let</span> Insert = <span class="built_in">require</span>(<span class="string">'./insertSort'</span>);</span><br><span class="line"><span class="keyword">let</span> n = <span class="number">500</span>;</span><br><span class="line"><span class="keyword">let</span> arr = utils.getRandomArray(n, <span class="number">0</span>, n);</span><br><span class="line"><span class="keyword">let</span> arr2 = utils.copyArray(arr);</span><br><span class="line"><span class="keyword">let</span> time1 = utils.testSort(arr, mergeSort);</span><br><span class="line"><span class="keyword">let</span> time2 = utils.testSort(arr2, Insert.insertSort2);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'merge sort: '</span>, time1);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'insert sort: '</span>, time2);</span><br></pre></td></tr></table></figure></p>
+<p>经过多次测试发现，在数据量小于一定数值（我这里时500）时，插入排序的效率要比归并排序高。所以在_mergeSort中，对于数据量小于20（也可以为其它合适的值，这里暂定为20），我们使用插入排序代替归并排序，在这里要对插入排序做一下调整。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> insertSort = <span class="function">(<span class="params">arr, l, r</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = l; i &lt;= r; i ++) &#123;</span><br><span class="line">    <span class="keyword">let</span> val = arr[i],</span><br><span class="line">        index = i;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(index &gt; <span class="number">0</span> &amp;&amp; val &lt; arr[index - <span class="number">1</span>]) &#123;</span><br><span class="line">      arr[index] = arr[index - <span class="number">1</span>];</span><br><span class="line">      index--;</span><br><span class="line">    &#125;</span><br><span class="line">    arr[index] = val;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时呢，我发现，在_mergeSort中，并不是每次都需要调用_merge函数的。凡是进入到merge中的数组，各自都是有序的，也就是说arr[l, mid]和arr[mid+1, r]是有序的。如果arr[mid] &lt; arr[mid+1]，那么就意味着arr[l, mid]部分的数整体小于arr[mid+1, r]，此时再进入合并没有意义，在这块儿也做下判断，避免不必要的合并。<br>下面是第二版的归并排序：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> _mergeSort2 = <span class="function">(<span class="params">arr, l, r</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (l &gt;= r) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (r - l &lt;= <span class="number">20</span>) &#123;</span><br><span class="line">    insertSort(arr, l, r);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> mid = <span class="built_in">Math</span>.floor((l + r) / <span class="number">2</span>);</span><br><span class="line">  _mergeSort2(arr, l, mid);</span><br><span class="line">  _mergeSort2(arr, mid + <span class="number">1</span>, r);</span><br><span class="line">  <span class="keyword">if</span> (arr[mid] &gt; arr[mid + <span class="number">1</span>]) &#123;</span><br><span class="line">    _merge(arr, l, mid, r);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> mergeSort2 = <span class="function"><span class="params">arr</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> n = arr.length;</span><br><span class="line">  _mergeSort2(arr, <span class="number">0</span>, n - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它的性能测试我们稍后进行。第二版对小数组的排序和合并进行了优化。下面我们考虑一下如何对既有的算法进一步优化。归并是先对数组进行拆分，然后排序，再一步步合并合并。能不能直接开始排序，然后合并，省去递归拆分的过程。接下来我按照这个思路写下第三版：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mergeSort3 = <span class="function"><span class="params">arr</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> n = arr.length;</span><br><span class="line">  <span class="keyword">if</span> (n &lt; <span class="number">20</span>) &#123;</span><br><span class="line">    insertSort(arr, <span class="number">0</span>, n - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> size = <span class="number">1</span>; size &lt;= n; size *= <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j + size - <span class="number">1</span> &lt; n; j *= size * <span class="number">2</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (arr[j + size - <span class="number">1</span>] &gt; arr[j + size]) &#123;</span><br><span class="line">        _merge(arr, j, j + size - <span class="number">1</span>, <span class="built_in">Math</span>.min(j + size * <span class="number">2</span> - <span class="number">1</span>, n - <span class="number">1</span>));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面来测试一下这三版的性能：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> utils = <span class="built_in">require</span>(<span class="string">'./../utils'</span>);</span><br><span class="line"><span class="keyword">let</span> n = <span class="number">2000000</span>;</span><br><span class="line"><span class="keyword">let</span> arr = utils.getRandomArray(n, <span class="number">0</span>, n);</span><br><span class="line"><span class="keyword">let</span> arr2 = utils.copyArray(arr);</span><br><span class="line"><span class="keyword">let</span> arr3 = utils.copyArray(arr);</span><br><span class="line"><span class="keyword">let</span> time1 = utils.testSort(arr, mergeSort);</span><br><span class="line"><span class="keyword">let</span> time2 = utils.testSort(arr2, mergeSort2);</span><br><span class="line"><span class="keyword">let</span> time3 = utils.testSort(arr3, mergeSort3);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'merge sort: '</span>, time1);   </span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'merge sort2: '</span>, time2);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'merge sort3: '</span>, time3);</span><br></pre></td></tr></table></figure>
+<p>从多次测试结果来看，第二版和第三版的运行速度快于第一版，但是在速度提升不明显，不太稳定。</p>
+<hr>
+<h4 id="快速排序及优化"><a href="#快速排序及优化" class="headerlink" title="快速排序及优化"></a>快速排序及优化</h4><p>快速排序，每次在数组中选出一个数作为基准，对数组进行排序，大于基准数的放在基准数的右边，小于基准数的放基准数的左边；然后对基准数左边和右边的部分各自再选一个数做基准数，重复之前的步骤，以此类推，直到最后数组被完全排序。<br>如图所示：</p>
+<img src="/images/quickSort.gif" title="[400] [title 快速排序]">
+<p>下面用JavaScript来做下第一版的实现：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 快速排序</span></span><br><span class="line"><span class="keyword">const</span> _partion = <span class="function">(<span class="params">arr, l, r</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> randIndex = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * (r - l + <span class="number">1</span>)) + l;</span><br><span class="line">  [arr[randIndex], arr[l]] = [arr[l], arr[randIndex]];</span><br><span class="line">  <span class="keyword">let</span> i = l + <span class="number">1</span>, j = r, val = arr[l];</span><br><span class="line">  <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">while</span>(i &lt;= r &amp;&amp; arr[i] &lt; val) &#123;</span><br><span class="line">      i ++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(r &gt;= l + <span class="number">1</span> &amp;&amp; arr[j] &gt; val) &#123;</span><br><span class="line">      j --;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (i &gt; j) &#123;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [arr[i], arr[j]] = [arr[j], arr[i]];</span><br><span class="line">    i ++;</span><br><span class="line">    j --;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  [arr[j], arr[l]] = [arr[l], arr[j]];</span><br><span class="line">  <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> _quickSort = <span class="function">(<span class="params">arr, l, r</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (l &gt;= r) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> index = _partion(arr, l, r);</span><br><span class="line">  _quickSort(arr, l, index - <span class="number">1</span>);</span><br><span class="line">  _quickSort(arr, index + <span class="number">1</span>, r);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> quickSort = <span class="function"><span class="params">arr</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> n = arr.length;</span><br><span class="line">  _quickSort(arr, <span class="number">0</span>, n - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> utils = <span class="built_in">require</span>(<span class="string">'./../utils'</span>);</span><br><span class="line"><span class="keyword">let</span> n = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">let</span> arr = utils.getRandomArray(n, <span class="number">0</span>, n);</span><br><span class="line"><span class="built_in">console</span>.log(arr); <span class="comment">// [ 1, 4, 5, 5, 4, 0, 8, 6, 7, 0 ]</span></span><br><span class="line">quickSort(arr);</span><br><span class="line"><span class="built_in">console</span>.log(arr); <span class="comment">// [ 0, 0, 1, 4, 4, 5, 5, 6, 7, 8 ]</span></span><br></pre></td></tr></table></figure></p>
+<p>在这里，我们实现了第一版的快速排序。那么他能够在哪里进行优化呢？在_partion中，对于等于基准数的数，我们都让它尽可能平均分布于左右两侧。那么如果我们做下标记直接把等于基准数的部分都排在一起，那么下次我们就可以只排小于基准数的部分和大于基准数的部分，能够减少排序的总次数，也可以理解为将整个数组分为三部分，大于基准数，小于基准数和等于基准数的。下次排序时，只排序大于和小于基准数的部分。<br>下面我们来做下第二版的快速排序的实现。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> _quickSort2 = <span class="function">(<span class="params">arr, l, r</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (l &gt;= r) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> randIndex = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * (r - l + <span class="number">1</span>)) + l;</span><br><span class="line">  [arr[randIndex], arr[l]] = [arr[l], arr[randIndex]];</span><br><span class="line">  <span class="keyword">let</span> lt = l,</span><br><span class="line">      gt = r + <span class="number">1</span>,</span><br><span class="line">      i = lt + <span class="number">1</span>,</span><br><span class="line">      val = arr[l];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span>(i &lt; gt) &#123;</span><br><span class="line">    <span class="keyword">if</span> (arr[i] &gt; val) &#123;</span><br><span class="line">      [arr[i], arr[gt - <span class="number">1</span>]] = [arr[gt - <span class="number">1</span>], arr[i]];</span><br><span class="line">      gt --;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &lt; val) &#123;</span><br><span class="line">      [arr[i], arr[lt + <span class="number">1</span>]] = [arr[lt + <span class="number">1</span>], arr[i]];</span><br><span class="line">      i ++;</span><br><span class="line">      lt ++;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      i ++;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  [arr[l], arr[lt]] = [arr[lt], arr[l]];</span><br><span class="line">  _quickSort2(arr, l, lt - <span class="number">1</span>);</span><br><span class="line">  _quickSort2(arr, gt, r);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> quickSort2 = <span class="function"><span class="params">arr</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> n = arr.length;</span><br><span class="line">  _quickSort2(arr, <span class="number">0</span>, n - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>下面我们来测试一下两个版本的性能。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> utils = <span class="built_in">require</span>(<span class="string">'./../utils'</span>);</span><br><span class="line"><span class="keyword">let</span> n = <span class="number">100000</span>;</span><br><span class="line"><span class="keyword">let</span> arr = utils.getRandomArray(n, <span class="number">0</span>, n);</span><br><span class="line"><span class="comment">// let arr = utils.getNearlyArray(n, 1);</span></span><br><span class="line"><span class="keyword">let</span> arr2 = utils.getRandomArray(n, <span class="number">0</span>, n);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> time1 = utils.testSort(arr, quickSort);</span><br><span class="line"><span class="keyword">let</span> time2 = utils.testSort(arr2, quickSort2);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'quick sort1: '</span>, time1); <span class="comment">// quick sort1:  0.067000 s</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'quick sort2: '</span>, time2); <span class="comment">// quick sort2:  0.112000 s</span></span><br></pre></td></tr></table></figure>
+<p>然而，在实际地测试中，第二版的性能并没有第一版的优。至于选哪个，大家酌情选择吧。</p>
+<hr>
+<h4 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h4><p>堆排序，利用堆积树进行排序。最大堆，就是根结点要大于两个子节点的值。下面我们先来实现下堆的数据结构。</p>
+<img src="/images/heap.gif" title="[400] [title 堆排序]">
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> __shiftDown = <span class="function">(<span class="params">arr, n, j</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">while</span>(j * <span class="number">2</span> + <span class="number">1</span> &lt; n) &#123;</span><br><span class="line">    <span class="keyword">let</span> k = j * <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (k + <span class="number">1</span> &lt; n &amp;&amp; arr[k + <span class="number">1</span>] &gt; arr[k]) &#123;</span><br><span class="line">      k += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (arr[j] &gt; arr[k]) &#123;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [arr[j], arr[k]] = [arr[k], arr[j]];</span><br><span class="line">    j = k;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> heapSort = <span class="function"><span class="params">arr</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> n = arr.length;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="built_in">Math</span>.floor(n / <span class="number">2</span>); i &gt;= <span class="number">0</span>; i --) &#123;</span><br><span class="line">    __shiftDown(arr, n, i);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> j = n - <span class="number">1</span>; j &gt; <span class="number">0</span>; j --) &#123;</span><br><span class="line">    [arr[<span class="number">0</span>], arr[j]] = [arr[j], arr[<span class="number">0</span>]];</span><br><span class="line">    __shiftDown(arr, j, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>堆排序大概就是这样。第一个for循环过后，会形成最大堆，即根结点要比每一个子节点都大；第二个for循环，先把最大的根结点的值和数组中最后一个值互换，然后排序从第1个到第n-1个值。每次都会确定一个最大的值放在合适的位置，直到根结点。</p>
+<hr>
+<p>最后以一张各种排序算法复杂度总表来结束本篇文章。</p>
+<img src="/images/table.png" title="[400] [title 排序算法]">
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构与算法/">数据结构与算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/01/13/Node学习————模块机制/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Node学习————模块机制
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/12/11/常见排序算法/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">常见排序算法（一）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

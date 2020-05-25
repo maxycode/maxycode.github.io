@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Promise简单用法及原理实现 | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="作为Promise的入门级文章，本文主要将一下几个方面：  Promise是什么？ 为什么要用Promise呢？ Promise的简单用法 Promise的原理实现 Promise的延伸   Promise是什么？Promise对象用于一个异步操作的最终完成（或失败）及其结果值的表示。通俗地讲，Promise可以对异步事件进行封装，以同步的形式处理回调函数。它简化了异步编程，以一种更容易让人理解的">
+<meta name="keywords" content="Promise">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Promise简单用法及原理实现">
+<meta property="og:url" content="https://maxy612.github.io/2017/10/18/Promise简单用法及原理实现/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="作为Promise的入门级文章，本文主要将一下几个方面：  Promise是什么？ 为什么要用Promise呢？ Promise的简单用法 Promise的原理实现 Promise的延伸   Promise是什么？Promise对象用于一个异步操作的最终完成（或失败）及其结果值的表示。通俗地讲，Promise可以对异步事件进行封装，以同步的形式处理回调函数。它简化了异步编程，以一种更容易让人理解的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-25T11:31:00.535Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Promise简单用法及原理实现">
+<meta name="twitter:description" content="作为Promise的入门级文章，本文主要将一下几个方面：  Promise是什么？ 为什么要用Promise呢？ Promise的简单用法 Promise的原理实现 Promise的延伸   Promise是什么？Promise对象用于一个异步操作的最终完成（或失败）及其结果值的表示。通俗地讲，Promise可以对异步事件进行封装，以同步的形式处理回调函数。它简化了异步编程，以一种更容易让人理解的">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Promise简单用法及原理实现" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/18/Promise简单用法及原理实现/" class="article-date">
+  <time datetime="2017-10-18T07:21:30.000Z" itemprop="datePublished">2017-10-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/学习/">学习</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Promise简单用法及原理实现
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>作为Promise的入门级文章，本文主要将一下几个方面：</p>
+<ol>
+<li>Promise是什么？</li>
+<li>为什么要用Promise呢？</li>
+<li>Promise的简单用法</li>
+<li>Promise的原理实现</li>
+<li>Promise的延伸</li>
+</ol>
+<hr>
+<h2 id="Promise是什么？"><a href="#Promise是什么？" class="headerlink" title="Promise是什么？"></a>Promise是什么？</h2><p>Promise对象用于一个异步操作的最终完成（或失败）及其结果值的表示。通俗地讲，Promise可以对异步事件进行封装，以同步的形式处理回调函数。它简化了异步编程，以一种更容易让人理解的方式处理异步回调，同时对于排查错误也非常有用。</p>
+<p>之前在做百度的秋招笔试题时，有一个操作题是让手写Promise的实现，当时什么都不记得，只是用ES6搭了个架子就灰溜溜地交卷了。后来，我找了一些网上的Promise原理实现来看，似懂非懂。前后大概看了有四五个实现吧，终于有点眉目了，尝试自己实现一个Promise，还是不行。上周五的时候电话面试了一个公司的前端，被问到手动实现Promise，只能暂时搪塞过去了。今天抽空又看了一遍Promise，觉得还是要把这块儿硬骨头啃下来。</p>
+<hr>
+<h2 id="为什么要用Promise呢？"><a href="#为什么要用Promise呢？" class="headerlink" title="为什么要用Promise呢？"></a>为什么要用Promise呢？</h2><p>看下面一ajax请求的例子：</p>
+<h5 id="a-异步回调"><a href="#a-异步回调" class="headerlink" title="a.异步回调"></a>a.异步回调</h5><p>以前，我们封装调用一个异步请求，一般是这样搞得：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ajax</span>(<span class="params">json</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> url = json.url || <span class="string">''</span>,</span><br><span class="line">      method = json.method || <span class="string">'get'</span>,</span><br><span class="line">      <span class="keyword">async</span> = json.async || <span class="literal">true</span>,</span><br><span class="line">      withCredentials = json.withCredentials || <span class="literal">false</span>,</span><br><span class="line">      succfn = json.success || <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;,</span><br><span class="line">      data = json.data || &#123;&#125;,</span><br><span class="line">      failfn = json.fail || <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;, xhr;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="string">'XMLHttpRequest'</span> <span class="keyword">in</span> <span class="built_in">window</span>) &#123;</span><br><span class="line">    xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    xhr = <span class="keyword">new</span> ActiveXObject(<span class="string">'Microsoft.XMLHTTP'</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> dataStr = <span class="string">''</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> data) &#123;</span><br><span class="line">    <span class="keyword">if</span> (data.hasOwnProperty(key)) &#123;</span><br><span class="line">      dataStr += key + <span class="string">'='</span> + <span class="built_in">encodeURIComponent</span>(data[key]) + <span class="string">'&amp;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  dataStr = dataStr.substring(<span class="number">0</span>, dataStr.length - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">  xhr.withCredentials = withCredentials;</span><br><span class="line">  <span class="keyword">if</span> (method.toLowerCase() === <span class="string">'get'</span>) &#123;</span><br><span class="line">    xhr.open(method, url + <span class="string">'?'</span> + dataStr, <span class="keyword">async</span>);</span><br><span class="line">    xhr.send();</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (method.toLowerCase === <span class="string">'post'</span>) &#123;</span><br><span class="line">    xhr.open(method, url, <span class="keyword">async</span>);</span><br><span class="line">    xhr.send(dataStr);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState == <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> ((xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) || xhr.status == <span class="number">304</span>) &#123;</span><br><span class="line">        succfn &amp;&amp; succfn(xhr.responseText);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        failfn(xhr.status);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  xhr.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">    failfn(e);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用时，</span></span><br><span class="line">ajax(&#123;</span><br><span class="line">    url: <span class="string">''</span>,</span><br><span class="line">    method: <span class="string">''</span>,</span><br><span class="line">    data: &#123;&#125;,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;&#125;,</span><br><span class="line">    fail: <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>对于单个的请求，足够用了，但是如果我们要发送好几个请求，且请求之间有数据依赖性的关系时，就会很麻烦（比如先发送一个请求获取用户id，然后通过用户id再次发送请求，获取用户手机号）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ajax(&#123;</span><br><span class="line">    url: <span class="string">'http://xxxx.com/api/getUserId'</span>,</span><br><span class="line">    method: <span class="string">'get'</span>,</span><br><span class="line">    data: &#123;&#125;,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">      ajax(&#123;</span><br><span class="line">          url: <span class="string">'http://xxxx.com/api/getPhone'</span>,</span><br><span class="line">          data: &#123;</span><br><span class="line">            userid: res</span><br><span class="line">          &#125;,</span><br><span class="line">          success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;&#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;,</span><br><span class="line">    fail: <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这只是两个有依赖请求时怎样处理回调，如果是有5，6个请求呢，那下一个请求就必须在前一个ajax请求的success的回调中来设置，这就出现了所谓的回调地狱，回调的层次会非常深，一旦出错，很难排查问题所在。这时，我们的Promise登场了，来拯救被回掉地狱困着的我们……</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 我们借用之前的ajax封装函数，</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ajax</span>(<span class="params">json</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 重点1</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 重点1结束</span></span><br><span class="line">    <span class="keyword">var</span> url = json.url || <span class="string">''</span>,</span><br><span class="line">        method = json.method || <span class="string">'get'</span>,</span><br><span class="line">        <span class="keyword">async</span> = json.async || <span class="literal">true</span>,</span><br><span class="line">        withCredentials = json.withCredentials || <span class="literal">false</span>,</span><br><span class="line">        data = json.data || &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">'XMLHttpRequest'</span> <span class="keyword">in</span> <span class="built_in">window</span>) &#123;</span><br><span class="line">      xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      xhr = <span class="keyword">new</span> ActiveXObject(<span class="string">'Microsoft.XMLHTTP'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> dataStr = <span class="string">''</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> data) &#123;</span><br><span class="line">      <span class="keyword">if</span> (data.hasOwnProperty(key)) &#123;</span><br><span class="line">        dataStr += key + <span class="string">'='</span> + <span class="built_in">encodeURIComponent</span>(data[key]) + <span class="string">'&amp;'</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dataStr = dataStr.substring(<span class="number">0</span>, dataStr.length - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    xhr.withCredentials = withCredentials;</span><br><span class="line">    <span class="keyword">if</span> (method.toLowerCase() === <span class="string">'get'</span>) &#123;</span><br><span class="line">      xhr.open(method, url + <span class="string">'?'</span> + dataStr, <span class="keyword">async</span>);</span><br><span class="line">      xhr.send();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (method.toLowerCase === <span class="string">'post'</span>) &#123;</span><br><span class="line">      xhr.open(method, url, <span class="keyword">async</span>);</span><br><span class="line">      xhr.send(dataStr);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.readyState == <span class="number">4</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) || xhr.status == <span class="number">304</span>) &#123;</span><br><span class="line">          <span class="comment">// 重点2</span></span><br><span class="line">          resolve(xhr.responseText);</span><br><span class="line">          <span class="comment">// 重点2 结束</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">// 重点3</span></span><br><span class="line">          reject(xhr.status);</span><br><span class="line">          <span class="comment">// 重点3 结束</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    xhr.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 重点4</span></span><br><span class="line">      reject(xhr.status);</span><br><span class="line">      <span class="comment">// 重点4 结束</span></span><br><span class="line">    &#125;    </span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>改动很少，只是加入了Promise的部分。现在，当我们之前两个请求时，可以这么做：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ajax(&#123;</span><br><span class="line">  url: <span class="string">'http://xxxx.com/api/getUserId'</span>,</span><br><span class="line">  method: <span class="string">'get'</span>,</span><br><span class="line">  data: &#123;&#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> ajax(&#123;</span><br><span class="line">    url: <span class="string">'http://xxxx.com/api/getPhone'</span>,</span><br><span class="line">    data: &#123;</span><br><span class="line">      userid: res</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;).catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.error(<span class="string">'err: '</span>, e);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这样，我们用Promise成功的处理了回调地狱的问题，如果之前的哪个步骤出错了，最后的catch都会捕获到错误的。当然，这只是Promise的一个用法。</p>
+<h5 id="b-请求并发"><a href="#b-请求并发" class="headerlink" title="b.请求并发"></a>b.请求并发</h5><p>除此之外，如果我们想发送一个请求，但是请求所需要的数据需要发送几个互不依赖（假设为a1, a2, a3, a4）的请求来获取，如果用Promise呢？很简单,直接用Promise.all[ajax(a1), ajax(a2), ajax(a3), ajax(a4)]).then(values =&gt; {console.log(values);})就好了，关于Promise.all,后边会详细说明。</p>
+<h5 id="c-请求最优策略"><a href="#c-请求最优策略" class="headerlink" title="c.请求最优策略"></a>c.请求最优策略</h5><p>如果我们有两个以上功能类似的接口在不同的服务器上且都可用，要获得对应的数据，可以单独获取一个请求，但我们想请求优化一些，就是向服务器分别发送请求，取先返回的请求的数据，这时我们可以用Promise.race([ajax(a1), ajax[a2]]).then(value =&gt; {console.log(value);}), 我们将会在第一时间内获得返回的数据。</p>
+<p>当然，Promise还有很多用法，我这里只是列出了一部分，有兴趣的话可以继续探索。</p>
+<hr>
+<h2 id="Promise的简单用法"><a href="#Promise的简单用法" class="headerlink" title="Promise的简单用法"></a>Promise的简单用法</h2><p>下面，介绍一下Promise的基础知识。</p>
+<p>Promise有pending, resolved, rejected三种状态，可用的状态转换是:</p>
+<h5 id="status"><a href="#status" class="headerlink" title="status"></a>status</h5><p>pending -&gt; resolved<br>pending -&gt; rejected</p>
+<p>状态一旦改变，以后该Promise的状态将不会变化。同时，执行对应的处理事件。</p>
+<h5 id="then"><a href="#then" class="headerlink" title="then"></a>then</h5><p>then方法在使用时，传入处理成功和失败的函数，当状态发生变化时，会调用对应的函数进行处理，然后返回一个值或者新的Promise。</p>
+<h5 id="catch"><a href="#catch" class="headerlink" title="catch"></a>catch</h5><p>相当于then(undefined, fn), 可以捕获异步操作中的错误。如果有多个then链式调用，在多个then之后加上catch，将会捕捉到Promise中的错误，返回一个新的Promise。</p>
+<h5 id="race和all"><a href="#race和all" class="headerlink" title="race和all"></a>race和all</h5><p>当多个Promise同时执行时，如果其中一个Promise的状态由pending变为resolved或rejected，则Promise.race([])将会返回最先改变状态的Promise并执行对应的resolve或者reject。可以把race的数组参数中的多个Promise看作几个长跑运动员，谁先到达终点，就选择谁。<br>Promise.all与Promise.race相反，当Promise.all([])参数中所有Promise的status都变为resolved时，才会返回一个新的Promise，而数组中Promise的resolve的结果作为参数组成一个结果数组，在新的Promise执行resolve时传入。相反，当数组中的Promise中任何一个状态变为rejected，则整个Promise.all调用会立即终止，并返回一个reject的新的Promise对象。</p>
+<p>使用Promise时，我们需要初始化一个Promise实例；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> readFile = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 这里放一些异步操作，如</span></span><br><span class="line">  fs.readFile(url, (err, data) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        reject(err); <span class="comment">// 如果读取文件失败了，我们调用reject,并将err错误信息传入。</span></span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        resolve(data); <span class="comment">// 将读取成功的信息作为参数传入</span></span><br><span class="line">      &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">readFile.then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(data); <span class="comment">// 接收读取的数据进行操作</span></span><br><span class="line">&#125;).catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.error(<span class="string">'err: '</span>, e); <span class="comment">// 接收出错信息并进行处理</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>初始化一个Promise实例，除了new Promise, 还有简便的方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="built_in">Promise</span>.resolve(<span class="number">4</span>);</span><br><span class="line">a.then(<span class="function"><span class="params">val</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(val); <span class="comment">// 4</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b = <span class="built_in">Promise</span>.reject(<span class="built_in">Error</span>(<span class="string">'哈哈，出错了'</span>))</span><br><span class="line">b.catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'err: '</span>, e); <span class="comment">// err:  Error: 哈哈，出错了</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>通过调用Promise.resolve或者Promise.reject，也会返回一个新的Promise实例。<br>Promise.resolve还有拆包的功能，即如果参数是一个Promise,会直接返回参数，作为参数的Promise的resolve或reject。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.resolve(<span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  resolve(<span class="number">4</span>);</span><br><span class="line">&#125;)).then(<span class="function"><span class="params">val</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(val); <span class="comment">// 4</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve(<span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  reject(<span class="built_in">Error</span>(<span class="string">'又出错了'</span>));</span><br><span class="line">&#125;)).catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'err: '</span>, e); <span class="comment">// err:  Error: 又出错了</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.reject(<span class="built_in">Error</span>(<span class="string">'错错错'</span>))</span><br><span class="line">.catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'err: '</span>, e); <span class="comment">// err:  Error: 错错错</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// reject 不会解析参数里的Promise，它会将里边的Promise当作一个整体进行处理</span></span><br><span class="line"><span class="built_in">Promise</span>.reject(<span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  resolve(<span class="number">4</span>);</span><br><span class="line">&#125;)).catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'err: '</span>, e); <span class="comment">// err:  Promise &#123; 4 &#125;</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>还是控制一下篇幅，原理实现部分就在下篇文章中来做吧</p>
+<p>……未完待续</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Promise/">Promise</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/10/18/Promise简单用法及原理实现-2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Promise简单用法及原理实现(2)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/10/16/typescript初试/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">TypeScript是什么？</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

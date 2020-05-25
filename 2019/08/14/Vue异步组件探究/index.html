@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Vue异步组件探究 | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="之前在回顾自己写的一个后台管理项目时，发现用到了Vue的异步组件。而之前恰好在研究vue的源码，顺便分析下异步组件的加载和执行过程。 异步组件是什么？异步，是相对于同步而言的。我们在使用Vue时，使用到的组件大多为同步组件。在vue实例第一次执行渲染的过程中，已经生成了组件构造器。而异步组件则是在用到该组件时，异步通过请求去拉取对应组件的js（这里需要和webpack的import相结合）。当对应">
+<meta name="keywords" content="Vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue异步组件探究">
+<meta property="og:url" content="https://maxy612.github.io/2019/08/14/Vue异步组件探究/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="之前在回顾自己写的一个后台管理项目时，发现用到了Vue的异步组件。而之前恰好在研究vue的源码，顺便分析下异步组件的加载和执行过程。 异步组件是什么？异步，是相对于同步而言的。我们在使用Vue时，使用到的组件大多为同步组件。在vue实例第一次执行渲染的过程中，已经生成了组件构造器。而异步组件则是在用到该组件时，异步通过请求去拉取对应组件的js（这里需要和webpack的import相结合）。当对应">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-25T11:31:00.535Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue异步组件探究">
+<meta name="twitter:description" content="之前在回顾自己写的一个后台管理项目时，发现用到了Vue的异步组件。而之前恰好在研究vue的源码，顺便分析下异步组件的加载和执行过程。 异步组件是什么？异步，是相对于同步而言的。我们在使用Vue时，使用到的组件大多为同步组件。在vue实例第一次执行渲染的过程中，已经生成了组件构造器。而异步组件则是在用到该组件时，异步通过请求去拉取对应组件的js（这里需要和webpack的import相结合）。当对应">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Vue异步组件探究" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/14/Vue异步组件探究/" class="article-date">
+  <time datetime="2019-08-13T16:11:55.000Z" itemprop="datePublished">2019-08-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vue异步组件探究
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前在回顾自己写的一个后台管理项目时，发现用到了Vue的异步组件。而之前恰好在研究vue的源码，顺便分析下异步组件的加载和执行过程。</p>
+<h3 id="异步组件是什么？"><a href="#异步组件是什么？" class="headerlink" title="异步组件是什么？"></a>异步组件是什么？</h3><p>异步，是相对于同步而言的。我们在使用Vue时，使用到的组件大多为同步组件。在vue实例第一次执行渲染的过程中，已经生成了组件构造器。而异步组件则是在用到该组件时，异步通过请求去拉取对应组件的js（这里需要和webpack的import相结合）。当对应的js加载完成后，获取到异步组件的配置项，从而创建组件构造器。再通过forceRender，强制依赖它的vm实例重新触发渲染函数。</p>
+<p><strong>为什么当时项目要选用异步组件呢？</strong></p>
+<pre><code>因为对于后台管理系统来说，通常左侧有一系列的操作tab。而每个tab对应一个组件。
+当用户进入时，如果把所有的组件都进行加载，会导致用户体验下降，等待时间过长。所以就需要使用异步组件。
+</code></pre><p>在用户进入页面时，只把它一开始用到的组件做成同步的。这样既不影响用户的操作体验，也优化了页面的加载速度。</p>
+<blockquote>
+<p>Vue中，如果有多个vm实例都用到了异步组件，异步组件只会加载一次，并在内存中做缓存，不会重复加载。</p>
+</blockquote>
+<h3 id="异步组件如何使用？"><a href="#异步组件如何使用？" class="headerlink" title="异步组件如何使用？"></a>异步组件如何使用？</h3><p>注册异步组件，可注册普通组件差不太多。既可以全局注册，也可以局部注册。不过不同的是异步组件需要通过webpack的import函数来引入。如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 局部注册</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    ...rest,</span><br><span class="line">    components: &#123;</span><br><span class="line">        a: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./components/a.vue'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 全局注册</span></span><br><span class="line">Vue.component(<span class="string">'async-comp'</span>, (resolve, reject) =&gt; (&#123;</span><br><span class="line">    component: <span class="function"><span class="params">()</span> =&gt;</span> imort(<span class="string">'./components/a.vue'</span>),</span><br><span class="line">    loading: loadingComp,</span><br><span class="line">    error: errorComp,</span><br><span class="line">    delay: <span class="number">200</span>,</span><br><span class="line">    timeout: <span class="number">3000</span></span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure></p>
+<p>其中，异步组件还有高级异步组件。所谓高级异步组件，就是提供了loading组件(用于组件异步加载时展示)，error组件(用于组件加载出错时展示)，delay(用于延迟加载异步组件)，timeout(用于设置异步组件加载的最大时长，如果超过了规定的时间还没有加载完毕，则展示error组件)。</p>
+<p>其中，error和loading组件都是同步的。因为当异步组件加载中或者加载出错时，需要立即展示对应的状态组件。</p>
+<p>对于异步组件，通过使用webpack提供的import函数，可以让webpack在打包时将import中传入的组件文件单独打包。这样当使用到该组件时，通过发送请求异步加载组件的js，当资源加载完毕后交给vue来处理加载。</p>
+<h3 id="异步组件是怎样执行的？"><a href="#异步组件是怎样执行的？" class="headerlink" title="异步组件是怎样执行的？"></a>异步组件是怎样执行的？</h3><p>首先，要先对webpack的import做一个说明：</p>
+<pre><code>根据webpack官网的解释，import是用于动态代码拆分。它传入一个模块路径，然后返回一个promise实例。在webpack打包时，
+会将import引入的模块单独打包到一个代码包中。并且在代码执行到所在行时再去加载对应的资源。
+</code></pre><p>对于webpack的import的探究，请参考<a href="https://webpack.docschina.org/api/module-methods#import-" target="_blank" rel="noopener">模块方法</a>。</p>
+<p>下面来分析下异步组件究竟是怎么加载的。以上面用法中的全局异步组件为例：</p>
+<ol>
+<li><p>Vue.component会在Vue.options.components上加入 {‘async-comp’: fn }。以便在组件渲染时执行vm._render方法时在createElement中找到对应的组件定义。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ASSET_TYPES = [<span class="string">'component'</span>, <span class="string">'directive'</span>, <span class="string">'filter'</span>];</span><br><span class="line">ASSET_TYPES.forEach(<span class="function"><span class="params">type</span> =&gt;</span> &#123;</span><br><span class="line">    Vue[type] = <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">      id: string,</span></span></span><br><span class="line"><span class="function"><span class="params">      definition: Function | Object</span></span></span><br><span class="line"><span class="function"><span class="params">    </span>): <span class="title">Function</span> | <span class="title">Object</span> | <span class="title">void</span> </span>&#123;</span><br><span class="line">        <span class="comment">// ... 略去和流程无关部分</span></span><br><span class="line">        <span class="keyword">this</span>.options[type + <span class="string">'s'</span>][id] = definition</span><br><span class="line">        <span class="comment">// 执行过后，Vue.options.components['async-comp'] = fn</span></span><br><span class="line">        <span class="keyword">return</span> definition</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在createElement中调用createComponent函数，进入组件vnode的创建过程。在createComponent中，对于异步组件的处理，主要是resolveAsyncComponent函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 此处的调用关系：vm.$mount -&gt; mountComponent -&gt; vm._update(vm._render(), hydrating) -&gt; </span></span><br><span class="line"><span class="comment">// -&gt; vm._render -&gt; vm._c -&gt; createElement -&gt; _createElement -&gt; createComponent</span></span><br><span class="line"><span class="comment">// 具体的流程就不具体分析了，最终会进入到createComponent函数中。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createComponent</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  Ctor: Class&lt;Component&gt; | Function | Object | void,</span></span></span><br><span class="line"><span class="function"><span class="params">  data: ?VNodeData,</span></span></span><br><span class="line"><span class="function"><span class="params">  context: Component,</span></span></span><br><span class="line"><span class="function"><span class="params">  children: ?Array&lt;VNode&gt;,</span></span></span><br><span class="line"><span class="function"><span class="params">  tag?: string</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">VNode</span> | <span class="title">Array</span>&lt;<span class="title">VNode</span>&gt; | <span class="title">void</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> baseCtor = context.$options._base</span><br><span class="line"></span><br><span class="line">  <span class="comment">// plain options object: turn it into a constructor</span></span><br><span class="line">  <span class="comment">// 此时 Ctor是之前定义的异步加载函数，并不是object</span></span><br><span class="line">  <span class="keyword">if</span> (isObject(Ctor)) &#123;</span><br><span class="line">    Ctor = baseCtor.extend(Ctor)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 有删减</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// async component</span></span><br><span class="line">  <span class="keyword">let</span> asyncFactory</span><br><span class="line">  <span class="keyword">if</span> (isUndef(Ctor.cid)) &#123;</span><br><span class="line">    <span class="comment">// 最终会进入这里。</span></span><br><span class="line">    asyncFactory = Ctor</span><br><span class="line">    Ctor = resolveAsyncComponent(asyncFactory, baseCtor)</span><br><span class="line">    <span class="comment">// 第一次执行渲染函数时，如果不是高级异步组件或者高级异步组件的delay不为0，则ctor默认为undefined。返回一个空的占位节点</span></span><br><span class="line">    <span class="keyword">if</span> (Ctor === <span class="literal">undefined</span>) &#123;</span><br><span class="line">      <span class="comment">// return a placeholder node for async component, which is rendered</span></span><br><span class="line">      <span class="comment">// as a comment node but preserves all the raw information for the node.</span></span><br><span class="line">      <span class="comment">// the information will be used for async server-rendering and hydration.</span></span><br><span class="line">      <span class="keyword">return</span> createAsyncPlaceholder(</span><br><span class="line">        asyncFactory,</span><br><span class="line">        data,</span><br><span class="line">        context,</span><br><span class="line">        children,</span><br><span class="line">        tag</span><br><span class="line">      )</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ... 省略其余部分</span></span><br><span class="line">  <span class="keyword">const</span> vnode = <span class="keyword">new</span> VNode(...opts);</span><br><span class="line">  <span class="keyword">return</span> vnode;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在resolveAsyncComponent函数中，做了下面几件事：</p>
+<ul>
+<li>判断该异步组件的error及resolved，如果有error或isloading为true或者resolved不为undefined，则返回对应状态的组件。</li>
+<li>收集了引用该异步组件的所有的vm实例，并存储在factory.owners中。</li>
+<li>定义了forceRender函数(用于在加载成功或者失败后对owners遍历调用其渲染函数)，resolve(异步组件加载成功后的处理函数)，reject(异步组件加载失败后的处理函数)</li>
+<li>调用异步组件对应的函数，并对高级异步组件做进一步的处理。</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">resolveAsyncComponent</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  factory: Function,</span></span></span><br><span class="line"><span class="function"><span class="params">  baseCtor: Class&lt;Component&gt;</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Class</span>&lt;<span class="title">Component</span>&gt; | <span class="title">void</span> </span>&#123;</span><br><span class="line">  <span class="comment">/** 第二次进入时会命中 start */</span></span><br><span class="line">  <span class="comment">// 如果异步组件加载失败或者超时(timeout)了，会进入这里</span></span><br><span class="line">  <span class="keyword">if</span> (isTrue(factory.error) &amp;&amp; isDef(factory.errorComp)) &#123;</span><br><span class="line">    <span class="keyword">return</span> factory.errorComp</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 组件被正常加载后，会进入这里</span></span><br><span class="line">  <span class="keyword">if</span> (isDef(factory.resolved)) &#123;</span><br><span class="line">    <span class="keyword">return</span> factory.resolved</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 收集引用该异步组件的vm实例，以便在forceRender时触发对应vm实例的渲染函数</span></span><br><span class="line">  <span class="keyword">const</span> owner = currentRenderingInstance</span><br><span class="line">  <span class="keyword">if</span> (owner &amp;&amp; isDef(factory.owners) &amp;&amp; factory.owners.indexOf(owner) === <span class="number">-1</span>) &#123;</span><br><span class="line">    <span class="comment">// already pending</span></span><br><span class="line">    factory.owners.push(owner)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 如果处于loading状态，返回loadingComp。</span></span><br><span class="line">  <span class="keyword">if</span> (isTrue(factory.loading) &amp;&amp; isDef(factory.loadingComp)) &#123;</span><br><span class="line">    <span class="keyword">return</span> factory.loadingComp</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/** 第二次进入时会命中 end */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (owner &amp;&amp; !isDef(factory.owners)) &#123;</span><br><span class="line">    <span class="keyword">const</span> owners = factory.owners = [owner]</span><br><span class="line">    <span class="keyword">let</span> sync = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">let</span> timerLoading = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">let</span> timerTimeout = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 当vm实例销毁时，将factory.owners中当前监听的owner移除。</span></span><br><span class="line">    ;<span class="function">(<span class="params">owner: any</span>).<span class="params">$on</span>(<span class="params"><span class="string">'hook:destroyed'</span>, (</span>) =&gt;</span> remove(owners, owner))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> forceRender = <span class="function">(<span class="params">renderCompleted: boolean</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = owners.length; i &lt; l; i++) &#123;</span><br><span class="line">        <span class="comment">// 重新执行了vm渲染watcher的update方法，即vm._update(vm._render(), hytrating)</span></span><br><span class="line">        (owners[i]: any).$forceUpdate()</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (renderCompleted) &#123;</span><br><span class="line">        owners.length = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> (timerLoading !== <span class="literal">null</span>) &#123;</span><br><span class="line">          clearTimeout(timerLoading)</span><br><span class="line">          timerLoading = <span class="literal">null</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (timerTimeout !== <span class="literal">null</span>) &#123;</span><br><span class="line">          clearTimeout(timerTimeout)</span><br><span class="line">          timerTimeout = <span class="literal">null</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> resolve = once(<span class="function">(<span class="params">res: <span class="built_in">Object</span> | Class&lt;Component&gt;</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// 缓存并生成加载回来的异步组件构造器</span></span><br><span class="line">      factory.resolved = ensureCtor(res, baseCtor)</span><br><span class="line">      <span class="comment">// invoke callbacks only if this is not a synchronous resolve</span></span><br><span class="line">      <span class="comment">// (async resolves are shimmed as synchronous during SSR)</span></span><br><span class="line">      <span class="comment">// 当异步组件加载完成时，此时sync为false。执行forceRender触发重新渲染，再次进入该函数后命中factory.resolved分支。</span></span><br><span class="line">      <span class="keyword">if</span> (!sync) &#123;</span><br><span class="line">        forceRender(<span class="literal">true</span>)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        owners.length = <span class="number">0</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> reject = once(<span class="function"><span class="params">reason</span> =&gt;</span> &#123;</span><br><span class="line">      process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; warn(</span><br><span class="line">        <span class="string">`Failed to resolve async component: <span class="subst">$&#123;<span class="built_in">String</span>(factory)&#125;</span>`</span> +</span><br><span class="line">        (reason ? <span class="string">`\nReason: <span class="subst">$&#123;reason&#125;</span>`</span> : <span class="string">''</span>)</span><br><span class="line">      )</span><br><span class="line">      <span class="comment">// 加载异步组件失败的情况</span></span><br><span class="line">      <span class="keyword">if</span> (isDef(factory.errorComp)) &#123;</span><br><span class="line">        factory.error = <span class="literal">true</span></span><br><span class="line">        forceRender(<span class="literal">true</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 对于高级异步组件，会返回一个object，如示例用法中全局注册组件。</span></span><br><span class="line">    <span class="keyword">const</span> res = factory(resolve, reject)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isObject(res)) &#123;</span><br><span class="line">      <span class="comment">// 对于上述用法中 局部注册组件那样, import会返回一个promise实例。</span></span><br><span class="line">      <span class="keyword">if</span> (isPromise(res)) &#123;</span><br><span class="line">        <span class="comment">// () =&gt; Promise</span></span><br><span class="line">        <span class="keyword">if</span> (isUndef(factory.resolved)) &#123;</span><br><span class="line">          res.then(resolve, reject)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isPromise(res.component)) &#123;</span><br><span class="line">        <span class="comment">// 高级异步组件。例如实例中配置了 component: () =&gt; import('./a.vue')</span></span><br><span class="line">        res.component.then(resolve, reject)</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 缓存错误组件构造器</span></span><br><span class="line">        <span class="keyword">if</span> (isDef(res.error)) &#123;</span><br><span class="line">          factory.errorComp = ensureCtor(res.error, baseCtor)</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 缓存loading组件构造器</span></span><br><span class="line">        <span class="keyword">if</span> (isDef(res.loading)) &#123;</span><br><span class="line">          factory.loadingComp = ensureCtor(res.loading, baseCtor)</span><br><span class="line">          <span class="keyword">if</span> (res.delay === <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 只有delay配置为0时，第一次执行渲染时才会返回loading组件构造器</span></span><br><span class="line">            factory.loading = <span class="literal">true</span></span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 如果设置了delay, </span></span><br><span class="line">            timerLoading = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">              timerLoading = <span class="literal">null</span></span><br><span class="line">              <span class="keyword">if</span> (isUndef(factory.resolved) &amp;&amp; isUndef(factory.error)) &#123;</span><br><span class="line">                factory.loading = <span class="literal">true</span></span><br><span class="line">                forceRender(<span class="literal">false</span>)</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;, res.delay || <span class="number">200</span>)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isDef(res.timeout)) &#123;</span><br><span class="line">          <span class="comment">// 如果异步组件加载时间超过了设置的timeout，也视为组件加载失败</span></span><br><span class="line">          timerTimeout = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            timerTimeout = <span class="literal">null</span></span><br><span class="line">            <span class="keyword">if</span> (isUndef(factory.resolved)) &#123;</span><br><span class="line">              reject(</span><br><span class="line">                process.env.NODE_ENV !== <span class="string">'production'</span></span><br><span class="line">                  ? <span class="string">`timeout (<span class="subst">$&#123;res.timeout&#125;</span>ms)`</span></span><br><span class="line">                  : <span class="literal">null</span></span><br><span class="line">              )</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;, res.timeout)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sync = <span class="literal">false</span></span><br><span class="line">    <span class="comment">// return in case resolved synchronously</span></span><br><span class="line">    <span class="keyword">return</span> factory.loading</span><br><span class="line">      ? factory.loadingComp</span><br><span class="line">      : factory.resolved</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>所以异步组件的加载和执行实际上是通过执行两次渲染函数实现的。</p>
+<p>第一次执行的时候，对异步组件对应的函数进行处理，定义处理loading, error状态组件，并给factory传入resolve, reject。当异步组件文件加载完成后通过resolve或者reject函数进行相应的处理，此时factory的error或者resolved状态会发生变化。设置完factory.error或者factory.resolved后，会调用forceRender，触发对应vm实例的渲染watcher的update，重新执行渲染，进而执行第二次渲染。</p>
+<p>第二次渲染时，同样会进入resolveAsyncComponent方法中。此时异步组件的加载结果已经确定了，会返回对应的成功状态组件(即我们定义的异步组件)或者失败状态的组件。之后接着执行后续流程。</p>
+<hr>
+<p>对异步组件的探究就先到这里了…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/">Vue</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          从一个日常bug看Vue的列表key及vnode更新策略
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Vue源码分析——虚拟dom如何渲染成真实dom</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

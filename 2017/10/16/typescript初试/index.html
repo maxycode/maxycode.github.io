@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>TypeScript是什么？ | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="问题由来 TypeScript概述及简单用法 TypeScript学习资源  问题由来最近Vue更新到2.5版本了，看到Vue加强了对TypeScript的集成优化。虽然对优化的细节还不清楚，但是在想TypeScript是个什么东西？之前暑期实习的时候，曾经翻过Vue的部分源码，源码里就有用到了TypeScript，那时候还疑惑js怎么还可以这样写。基于此，我觉得有必要尝试一下TypeScrip">
+<meta name="keywords" content="TypeScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TypeScript是什么？">
+<meta property="og:url" content="https://maxy612.github.io/2017/10/16/typescript初试/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="问题由来 TypeScript概述及简单用法 TypeScript学习资源  问题由来最近Vue更新到2.5版本了，看到Vue加强了对TypeScript的集成优化。虽然对优化的细节还不清楚，但是在想TypeScript是个什么东西？之前暑期实习的时候，曾经翻过Vue的部分源码，源码里就有用到了TypeScript，那时候还疑惑js怎么还可以这样写。基于此，我觉得有必要尝试一下TypeScrip">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-25T11:31:00.536Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TypeScript是什么？">
+<meta name="twitter:description" content="问题由来 TypeScript概述及简单用法 TypeScript学习资源  问题由来最近Vue更新到2.5版本了，看到Vue加强了对TypeScript的集成优化。虽然对优化的细节还不清楚，但是在想TypeScript是个什么东西？之前暑期实习的时候，曾经翻过Vue的部分源码，源码里就有用到了TypeScript，那时候还疑惑js怎么还可以这样写。基于此，我觉得有必要尝试一下TypeScrip">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-typescript初试" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/16/typescript初试/" class="article-date">
+  <time datetime="2017-10-16T10:17:19.000Z" itemprop="datePublished">2017-10-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/学习/">学习</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      TypeScript是什么？
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>问题由来</li>
+<li>TypeScript概述及简单用法</li>
+<li>TypeScript学习资源</li>
+</ul>
+<h2 id="问题由来"><a href="#问题由来" class="headerlink" title="问题由来"></a>问题由来</h2><p>最近Vue更新到2.5版本了，看到Vue加强了对TypeScript的集成优化。虽然对优化的细节还不清楚，但是在想TypeScript是个什么东西？之前暑期实习的时候，曾经翻过Vue的部分源码，源码里就有用到了TypeScript，那时候还疑惑js怎么还可以这样写。基于此，我觉得有必要尝试一下TypeScript。</p>
+<h2 id="TypeScript的概述和简单用法"><a href="#TypeScript的概述和简单用法" class="headerlink" title="TypeScript的概述和简单用法"></a>TypeScript的概述和简单用法</h2><p>TypeScript是JavaScript的超集（也就是JavaScript是TypeScript的子集）。TypeScript的后缀是.ts或者.tsx，通过全局安装typescript将ts或tsx文件编译成.js文件。<br>既然有了JavaScript，为什么还需要TypeScript呢？<br>JavaScript是一门弱类型语言，用法相较于c, c++, Java等这些语言比较灵活。如果一开始就接触的是JavaScript,会习惯于它的灵活的用法。另一方面，JavaScript也是一门解释型语言，这也就意味着js脚本中的错误只有在执行的时候才会在浏览器中出现，对于由c, c++, Java转到JavaScript的开发人员，无疑很不方便。而TypeScript可以在写代码和编译为js的时候对代码进行检查，能够提前发现代码中的错误，这样极大方便了开发；同时，在TypeScript里，可以使用类似ES6的语法，TypeScript可以编译成es3或者es5的代码。</p>
+<p>那下面就来简单地学习一些TypeScript的入门知识吧。<br>首先，全局安装TypeScript（首先要保证自己电脑上安装了nodejs和npm）。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 安装typescript</span><br><span class="line">npm install -g typescript</span><br><span class="line"></span><br><span class="line">// 新建项目文件夹并进入</span><br><span class="line">mkdir typescript-learn &amp;&amp; cd typescript-learn</span><br></pre></td></tr></table></figure></p>
+<h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><p>平时我们写js函数，一般是这样的：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Point</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> x === <span class="string">'number'</span> &amp;&amp; <span class="keyword">typeof</span> y === <span class="string">'number'</span> &amp;&amp; !<span class="built_in">isNaN</span>(x) &amp;&amp; !<span class="built_in">isNaN</span>(y)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">'x, y必须为数字类型'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Math</span>.sqrt(x * x + y * y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通常情况下，我们需要通过if判断来限制参数类型；如果我们使用TypeScript，可以这样：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Point</span>(<span class="params">x: number, y: number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Math</span>.sqrt(x ** <span class="number">2</span> + y ** <span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在typescript-learn文件夹中，创建一个test.ts，写入上面的函数。当你调用该函数时，</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 故意放入一个错误类型的字符串</span></span><br><span class="line">Point(<span class="string">'333'</span>, <span class="number">3</span>); <span class="comment">// error TS2345: Argument of type '"333"' is not assignable to parameter of type 'number'</span></span><br><span class="line">Point(<span class="number">3</span>, <span class="number">2</span>); <span class="comment">// ok</span></span><br></pre></td></tr></table></figure>,<br><br>这时我们看下编译后生成的js文件<br><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Point</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Math</span>.sqrt(<span class="built_in">Math</span>.pow(x, <span class="number">2</span>) + <span class="built_in">Math</span>.pow(y, <span class="number">2</span>));</span><br><span class="line">&#125;</span><br><span class="line">Point(<span class="number">33</span>, <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<p>经过TypeScript编译后，生成了我们熟悉的js文件和语法。在这个过程中，你会发现，如果代码中有错误，在命令行就会显示出来方便我们处理；此外，代码被转换成了es5的语法，兼容性也一并解决了。</p>
+<h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><p>函数声明可以采用上边的方式，变量声明同样也可以。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a: number = <span class="number">30</span>; <span class="comment">// ok</span></span><br><span class="line"><span class="keyword">let</span> b: boolean = <span class="literal">true</span>; <span class="comment">// ok</span></span><br><span class="line"><span class="keyword">let</span> c: number[] = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]; <span class="comment">// ok</span></span><br><span class="line"><span class="keyword">let</span> d: string = <span class="string">`hello, world <span class="subst">$&#123;a&#125;</span>`</span>; <span class="comment">// ok</span></span><br><span class="line"><span class="keyword">let</span> e: any = <span class="string">'dddd'</span>; <span class="comment">// ok  如果不清楚变量的类型，可以用any，表示任何类型</span></span><br></pre></td></tr></table></figure>
+<p>这些代码会被编译为：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">30</span>; <span class="comment">// ok</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="literal">true</span>; <span class="comment">// ok</span></span><br><span class="line"><span class="keyword">var</span> c = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]; <span class="comment">// ok</span></span><br><span class="line"><span class="keyword">var</span> d = <span class="string">"hello, world "</span> + a; <span class="comment">// ok</span></span><br><span class="line"><span class="keyword">var</span> e = <span class="string">'dddd'</span>; <span class="comment">// ok  如果不清楚变量的类型，可以用any，表示任何类型</span></span><br></pre></td></tr></table></figure>
+<p>此外，在TypeScript中，还有一种新的数据类型—枚举<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">enum Color &#123;</span><br><span class="line">  Green,</span><br><span class="line">  Blue,</span><br><span class="line">  Red</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(Color);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 会被编译成这样：</span></span><br><span class="line"><span class="keyword">var</span> Color;</span><br><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">Color</span>) </span>&#123;</span><br><span class="line">    Color[Color[<span class="string">"Green"</span>] = <span class="number">0</span>] = <span class="string">"Green"</span>;</span><br><span class="line">    Color[Color[<span class="string">"Blue"</span>] = <span class="number">1</span>] = <span class="string">"Blue"</span>;</span><br><span class="line">    Color[Color[<span class="string">"Red"</span>] = <span class="number">2</span>] = <span class="string">"Red"</span>;</span><br><span class="line">&#125;)(Color || (Color = &#123;&#125;));</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(Color); <span class="comment">// &#123; '0': 'Green', '1': 'Blue', '2': 'Red', Green: 0, Blue: 1, Red: 2 &#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>通过这样的方式，会生成一个对象，在键名和键值之间建立双向映射。当然，如果给Green, Blue赋值时，如果赋值为其它数字，会在赋值的数字和Green, Blue建立双向映射。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">enum Color &#123;</span><br><span class="line">    Green = <span class="number">4</span>,</span><br><span class="line">    Blue = <span class="number">6</span>,</span><br><span class="line">    Red = <span class="string">'hello'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 编译过后，生成</span></span><br><span class="line"><span class="keyword">var</span> Color;</span><br><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">Color</span>) </span>&#123;</span><br><span class="line">    Color[Color[<span class="string">"Green"</span>] = <span class="number">4</span>] = <span class="string">"Green"</span>;</span><br><span class="line">    Color[Color[<span class="string">"Blue"</span>] = <span class="number">6</span>] = <span class="string">"Blue"</span>;</span><br><span class="line">    Color[<span class="string">"Red"</span>] = <span class="string">"hello"</span>;</span><br><span class="line">&#125;)(Color || (Color = &#123;&#125;));</span><br></pre></td></tr></table></figure>
+<h4 id="类"><a href="#类" class="headerlink" title="类"></a>类</h4><p>熟悉JavaScript的人都知道，JavaScript的类不是真正的类，而是伪类，是通过构造函数来实现的。尽管在ES6中实现了class的语法糖，但仍然不是真正的类。在Java或者C++中，我们编写类，会涉及到变量的不同类型，如 public, protected, private等，数据的作用范围和类型有严格的限制。在javascript中，我们写构造函数时，并不能通过public, protected, private来对变量或函数进行控制。但是在typescript中，我们却可以这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    private name: string; <span class="comment">// 只能在该类内部可用</span></span><br><span class="line">    public hobby: string[]; <span class="comment">// 可自由调用</span></span><br><span class="line">    protected job: string; <span class="comment">// 在类内部和子类中可用</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">constructor</span>(name: string, hobby: string | string[]) &#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">typeof</span> hobby === <span class="string">'string'</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.hobby = [hobby];</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(hobby)) &#123;</span><br><span class="line">            <span class="keyword">this</span>.hobby = hobby;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    getHobby() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.hobby;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    getName() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    editName(newName: string) &#123;</span><br><span class="line">        <span class="keyword">this</span>.name = newName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Doctor</span> <span class="keyword">extends</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name: string, hobby: string | string[], job?: string /* 后边加问号代表参数可选 */) &#123;</span><br><span class="line">        <span class="keyword">super</span>(name, hobby);</span><br><span class="line">        <span class="keyword">this</span>.job = job || <span class="string">'自由职业者'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    getJob() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.job;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> doctor = <span class="keyword">new</span> Doctor(<span class="string">'maxy'</span>, <span class="string">'coding'</span>, <span class="string">'doctor'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(doctor); <span class="comment">// Doctor &#123; name: 'maxy', hobby: [ 'coding' ], job: 'doctor' &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(doctor.name); <span class="comment">// error TS2341: Property 'name' is private and only accessible within class 'Person'.</span></span><br><span class="line"><span class="built_in">console</span>.log(doctor.hobby); <span class="comment">// [ 'coding' ]</span></span><br></pre></td></tr></table></figure>
+<p>相信有过面向对象编程经验的人能够看懂用typescript实现的代码.</p>
+<h4 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h4><p>TypeScript的核心原则之一是对值所具有的结构进行类型检查。而接口可以定义数据的结构，在使用所定义的数据结构时typescript会进行检查。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">    readonly name: string;</span><br><span class="line">    sex: string;</span><br><span class="line">    hobby: string | string[];</span><br><span class="line">    job?: string;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> person: Person = &#123;</span><br><span class="line">    name: <span class="string">'maxy'</span>,</span><br><span class="line">    sex: <span class="string">'male'</span>,</span><br><span class="line">    hobby: <span class="string">'codiing'</span>,</span><br><span class="line">    job: <span class="string">'333'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fun</span>(<span class="params">person: Person</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.name = person.name;</span><br><span class="line">  <span class="keyword">this</span>.sex = person.sex;</span><br><span class="line">  <span class="keyword">this</span>.hobby = person.hobby;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun(&#123;</span><br><span class="line">    name: <span class="string">'dddd'</span></span><br><span class="line">&#125;) <span class="comment">// Argument of type '&#123; name: string; &#125;' is not assignable to parameter of type 'Person' Property 'sex' is missing in type '&#123; name: string; &#125;'.</span></span><br><span class="line"></span><br><span class="line">person.name = <span class="string">'zhang'</span>; <span class="comment">// Error: Cannot assign to 'name' because it is a constant or a read-only property</span></span><br></pre></td></tr></table></figure>
+<p>通过接口这种方式，可以很方便的定义和调用结构化的数据。</p>
+<p>除了以上这些，还有命名空间，遍历器，模块化，类型推断等更多功能，但上边这些应该是经常用到的，感兴趣的话可以再下面的学习链接中继续探索。</p>
+<h2 id="TypeScript学习资源"><a href="#TypeScript学习资源" class="headerlink" title="TypeScript学习资源"></a>TypeScript学习资源</h2><p>参考链接：</p>
+<ul>
+<li><a href="https://zhongsp.gitbooks.io/typescript-handbook/content/doc/handbook/tutorials/index.html" title="[external] [typescript handbook]" target="_blank" rel="noopener">typescript-handbook</a></li>
+<li><a href="https://www.typescriptlang.org/" title="[external] [typescript官网]" target="_blank" rel="noopener">typescript官网</a>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/">TypeScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/10/18/Promise简单用法及原理实现/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Promise简单用法及原理实现
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/10/11/第一篇文章/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">个人博客说明</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

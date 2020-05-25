@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>https为什么比http更安全 | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在面试中偶尔会遇到这个问题，https为什么更安全？今天一起来说说这个问题。 起因http协议是应用层协议，在设计之初只是为了传输超文本文件，没有太多加密数据的传输需求，所以一般是明文传输。然而从客户端到服务端，要经过用户设备、路由器、运营商、服务器等中间环节，由于是明文传输，在中间环节信息比较容易遭到窃取和修改。 随着Web应用逐渐丰富，对Web传输的安全性有了更多的要求。特别是电子商务、金融服">
+<meta name="keywords" content="前端,浏览器,https">
+<meta property="og:type" content="article">
+<meta property="og:title" content="https为什么比http更安全">
+<meta property="og:url" content="https://maxy612.github.io/2020/05/25/https为什么比http更安全/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="在面试中偶尔会遇到这个问题，https为什么更安全？今天一起来说说这个问题。 起因http协议是应用层协议，在设计之初只是为了传输超文本文件，没有太多加密数据的传输需求，所以一般是明文传输。然而从客户端到服务端，要经过用户设备、路由器、运营商、服务器等中间环节，由于是明文传输，在中间环节信息比较容易遭到窃取和修改。 随着Web应用逐渐丰富，对Web传输的安全性有了更多的要求。特别是电子商务、金融服">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-25T11:37:55.792Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="https为什么比http更安全">
+<meta name="twitter:description" content="在面试中偶尔会遇到这个问题，https为什么更安全？今天一起来说说这个问题。 起因http协议是应用层协议，在设计之初只是为了传输超文本文件，没有太多加密数据的传输需求，所以一般是明文传输。然而从客户端到服务端，要经过用户设备、路由器、运营商、服务器等中间环节，由于是明文传输，在中间环节信息比较容易遭到窃取和修改。 随着Web应用逐渐丰富，对Web传输的安全性有了更多的要求。特别是电子商务、金融服">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-https为什么比http更安全" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/05/25/https为什么比http更安全/" class="article-date">
+  <time datetime="2020-05-25T11:35:25.000Z" itemprop="datePublished">2020-05-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      https为什么比http更安全
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在面试中偶尔会遇到这个问题，https为什么更安全？今天一起来说说这个问题。</p>
+<h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>http协议是应用层协议，在设计之初只是为了传输超文本文件，没有太多加密数据的传输需求，所以一般是明文传输。然而从客户端到服务端，要经过用户设备、路由器、运营商、服务器等中间环节，由于是明文传输，在中间环节信息比较容易遭到窃取和修改。</p>
+<p>随着Web应用逐渐丰富，对Web传输的安全性有了更多的要求。特别是电子商务、金融服务等的兴起，保证用户会话信息的安全性，显得越来越重要。</p>
+<p>后来，提出了在http协议所在的应用层和传输层增加了安全层(ssl/tls)，用于对Web信息传输的加密和解密，以增强传输的安全性。</p>
+<h4 id="加密三种方式"><a href="#加密三种方式" class="headerlink" title="加密三种方式"></a>加密三种方式</h4><p>加密通常有对称加密和非对称加密。</p>
+<p>对称加密是浏览器和服务器都采用同一个秘钥，用这个秘钥进行信息的加密和解密操作。</p>
+<p>非对称加密是公钥加密，私钥解密；私钥加密，公钥解密。</p>
+<h5 id="采用对称加密"><a href="#采用对称加密" class="headerlink" title="采用对称加密"></a>采用对称加密</h5><p>采用对称加密的话，大概是这么个流程：</p>
+<ol>
+<li>在建立连接之初，浏览器向服务器发送自己支持的加密套件列表和一个client-random(客户端生成的随机数)。</li>
+<li>服务器收到请求，从加密套件列表中指定加密套件，记下client-random，生成server-random(服务端生成的随机数)，将加密套件和server-random返回给浏览器。</li>
+<li>此时浏览器和服务器都有了client-random和server-random。然后浏览器和服务器互相确认。</li>
+<li>在传输数据阶段，浏览器根据之前商定的加密套件对client-random和server-random计算加密秘钥，然后把要传输的数据进行秘钥加密后传输给服务器。然后服务器也根据client-random和server-random计算加密秘钥，对浏览器传入的数据进行解密。然后将要返回的数据也进行秘钥加密，发送回客户端。</li>
+</ol>
+<p>在这个过程中，还是client-random和server-random以及加密套件的传输都是明文，所以还是有可能被中间人获取到，然后计算出加密秘钥，对拦截到的消息进行加密解密。只依靠对称加密不行。</p>
+<h5 id="采用非对称加密"><a href="#采用非对称加密" class="headerlink" title="采用非对称加密"></a>采用非对称加密</h5><p>采用非对称加密的话，大致是这么个流程：</p>
+<ol>
+<li>建立连接之初，浏览器向服务器发送自己支持的加密套件列表。</li>
+<li>服务器选中加密套件，然后将加密套件和公钥一起返回给浏览器。</li>
+<li>浏览器发送数据时，根据公钥对数据进行加密。服务端收到加密后的数据，按照私钥进行解密。</li>
+<li>服务器将要返回的数据用私钥进行加密，传到浏览器端，浏览器根据公钥进行解密。</li>
+</ol>
+<p>在这个过程中，公钥和加密套件的传输是明文的，中间人可以获取到。不过非对称加密保证了中间人不能对浏览器发送的数据进行解密。如果只用非对称加密进行处理，会有以下问题：</p>
+<ol>
+<li>加密效率低。非对称加密的速度较对称加密低，而加解密速度会影响到资源获取时间，进而影响到用户体验。</li>
+<li>服务器返回数据的安全性无法保证。服务器返回数据，是用私钥进行加密的，而中间人是可以获取到加密公钥和加密套件的。所以在服务器返回数据的时候，中间人可以解密对应的数据。</li>
+</ol>
+<h5 id="非对称加密和对称加密同时使用"><a href="#非对称加密和对称加密同时使用" class="headerlink" title="非对称加密和对称加密同时使用"></a>非对称加密和对称加密同时使用</h5><p>两种加密方法都使用的话，大概是这么个流程：</p>
+<ol>
+<li>浏览器向服务器发送自己支持的加密套件列表和client-random(浏览器随机生成的数字)</li>
+<li>服务器收到浏览器请求，记下client-random, 选中加密套件，生成server-random，然后将加密套件(非对称加密套件和对称加密套件)、server-random和公钥(用于非对称加密的)返回给浏览器。</li>
+<li>浏览器收到之后，生成一个随机数pre-master，然后进行用公钥进行加密。将加密后的数据传给服务器。此时如果中间人能够获得加密后的pre-mater，但是由于是非对称加密，所以没办法对数据进行解密。</li>
+<li>服务器收到加密后的pre-master，用自己的私钥进行解密，然后根据client-random、server-random以及解密后的pre-master，生成对称加密的秘钥。而浏览器端此时也能够根据client-random, server-random以及pre-master生成对称加密的秘钥。</li>
+<li>服务器和浏览器通过之前生成的对称加密的秘钥进行信息收发。而中间人由于缺少pre-master，没办法生成对称加密的秘钥，进而无法对信息进行解密。</li>
+</ol>
+<hr>
+<p>数据加解密的问题解决了，但是还有问题。</p>
+<p>如果黑客通过劫持DNS，修改了用户所访问的域名对应的服务器地址，此时用户是不知道的。而之前的加密方式也不能处理这种问题。还要有一种让服务器自证“我就是我”的一种机制。那么怎么证明呢？</p>
+<p>以车子为例，我们怎么证明我们买的车子是我们的呢？在买车的时候，销售商会提供买车收据，然后我们要带着购买证明向税务机构缴纳购车税，去车管所给车子办理拍照、挂牌等一系列手续，然后官方还会出具一份机动车所有权证书，以证明这个车是我买的。</p>
+<p>CA证书差不多也是这个路子。我们需要去向权威机构申请CA证书。在申请证书的时候，我们要提交一系列的信息，域名及所有权信息、自己的公钥信息(私钥自己留存)，公司信息，站点信息等。权威机构对提交的信息进行审核确认，然后颁发对应的CA证书给网站所有者。CA证书中包含了公司信息、公钥、组织信息等，同时还有一个根据这些信息(进行hash后的)由CA证书的私钥加密生成的签名。</p>
+<p>加入CA证书之后的流程是什么样的呢？</p>
+<ol>
+<li>浏览器向服务器发送自己支持的对称加密套件列表和套件列表以及client-random。</li>
+<li>服务器收到信息后，生成server-random。然后返回加密套件、server-random和数字证书(CA证书)。CA证书里有公钥。对应的私钥位于网站所有者服务器上。</li>
+<li>浏览器进行CA证书的校验。校验颁发机构、有效期等信息。</li>
+<li>校验通过后，确认当前访问的服务器确实是域名所有者的。然后生成pre-master(随机生成)。然后用CA证书中的公钥对Pre-master进行加密，发送给服务器。</li>
+<li>服务器获取到加密后的pre-master，用自己的私钥进行解密。之后服务器和浏览器都根据client-random, server-random和pre-master生成对称解密的秘钥，进行信息加密和解密。</li>
+</ol>
+<p>对于第三步中，浏览器对CA证书进行有效性校验，大致是什么样的流程呢？</p>
+<p>浏览器对CA证书中的明文信息进行hash，然后将CA中的签名用CA证书的公钥进行解密，然后将解密后的信息和本地hash后的信息做对比。如果相等，则证明当前CA证书是有效的；同时浏览器还会验证域名信息、有效期等。</p>
+<p>此时我们已经确认了这个CA是谁。如果这个CA是由恶意分子注册的，那也不安全，因此此时浏览器不知道该不该最终信任该CA证书。然后浏览器会去查询给这个CA颁发CA证书的CA，再以同样的方式验证它的上级，一直到顶级CA。浏览器会内置一些顶级的CA，如果最终找到的CA没有在浏览器内置的CA中，证书也会被判定为非法。当浏览器验证到根证书的话，如果证明这个根证书是合法的？合法的根证书会内置在操作系统中。是经过WebTrust认证的。除人为更改情况下是可以信赖的。</p>
+<hr>
+<p>至此，https加解密及验证使得它比https更加安全。非对称加密和对称加密及CA证书共同完成了数据传输中加解密及信任度的问题。然而，如果系统的根证书被人为恶意植入的话，https也就相对没这么安全了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/https/">https</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/浏览器/">浏览器</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">从一个日常bug看Vue的列表key及vnode更新策略</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

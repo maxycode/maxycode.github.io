@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>微信网页开发踩坑记 | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近参与了公司的微信公众号商城站点的开发与上线过程，遇到一些印象比较深刻的坑，经过多方查找，最后终于一一解决了，写个文章总结下。主要有三个坑： 微信公众号网页二次分享问题 复制粘贴板安卓和ios兼容性问题 调用window.history.go(-1)时回退页面刷新问题  不想听我讲废话的以及探究过程的，提前写明症状及处理方法，不浪费大家的时间。 对于第一个二次分享问题，经过多方查找，发现经过微信">
+<meta name="keywords" content="微信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信网页开发踩坑记">
+<meta property="og:url" content="https://maxy612.github.io/2019/06/24/微信网页开发踩坑记/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="最近参与了公司的微信公众号商城站点的开发与上线过程，遇到一些印象比较深刻的坑，经过多方查找，最后终于一一解决了，写个文章总结下。主要有三个坑： 微信公众号网页二次分享问题 复制粘贴板安卓和ios兼容性问题 调用window.history.go(-1)时回退页面刷新问题  不想听我讲废话的以及探究过程的，提前写明症状及处理方法，不浪费大家的时间。 对于第一个二次分享问题，经过多方查找，发现经过微信">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-25T11:31:00.537Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微信网页开发踩坑记">
+<meta name="twitter:description" content="最近参与了公司的微信公众号商城站点的开发与上线过程，遇到一些印象比较深刻的坑，经过多方查找，最后终于一一解决了，写个文章总结下。主要有三个坑： 微信公众号网页二次分享问题 复制粘贴板安卓和ios兼容性问题 调用window.history.go(-1)时回退页面刷新问题  不想听我讲废话的以及探究过程的，提前写明症状及处理方法，不浪费大家的时间。 对于第一个二次分享问题，经过多方查找，发现经过微信">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-微信网页开发踩坑记" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/24/微信网页开发踩坑记/" class="article-date">
+  <time datetime="2019-06-24T15:23:43.000Z" itemprop="datePublished">2019-06-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      微信网页开发踩坑记
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="最近参与了公司的微信公众号商城站点的开发与上线过程，遇到一些印象比较深刻的坑，经过多方查找，最后终于一一解决了，写个文章总结下。主要有三个坑："><a href="#最近参与了公司的微信公众号商城站点的开发与上线过程，遇到一些印象比较深刻的坑，经过多方查找，最后终于一一解决了，写个文章总结下。主要有三个坑：" class="headerlink" title="最近参与了公司的微信公众号商城站点的开发与上线过程，遇到一些印象比较深刻的坑，经过多方查找，最后终于一一解决了，写个文章总结下。主要有三个坑："></a>最近参与了公司的微信公众号商城站点的开发与上线过程，遇到一些印象比较深刻的坑，经过多方查找，最后终于一一解决了，写个文章总结下。主要有三个坑：</h4><ol>
+<li>微信公众号网页二次分享问题</li>
+<li>复制粘贴板安卓和ios兼容性问题</li>
+<li>调用window.history.go(-1)时回退页面刷新问题</li>
+</ol>
+<h4 id="不想听我讲废话的以及探究过程的，提前写明症状及处理方法，不浪费大家的时间。"><a href="#不想听我讲废话的以及探究过程的，提前写明症状及处理方法，不浪费大家的时间。" class="headerlink" title="不想听我讲废话的以及探究过程的，提前写明症状及处理方法，不浪费大家的时间。"></a>不想听我讲废话的以及探究过程的，提前写明症状及处理方法，不浪费大家的时间。</h4><ol>
+<li><p>对于第一个二次分享问题，经过多方查找，发现经过微信公众号网页分享出去的页面，微信会自动加上from=xx&amp;isappinstalled=0参数，点击分享链接进来，调用wx.config进行配置时，即使有正确的配置参数signature，微信也会报 invalid signature。起初怀疑是url多了分享的参数导致的问题，后来翻了下微信jssdk的开发文档，对于错误原因，可以查看<a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421141115" target="_blank" rel="noopener">微信公众平台开发文档</a>附录五，有这样一段话：</p>
+<p> <strong>确保你获取用来签名的url是动态获取的，动态页面可参见实例代码中php的实现方式。如果是html的静态页面在前端通过ajax将url传到后台签名，前端需要用js获取当前页面除去’#’hash部分的链接（可用location.href.split(‘#’)[0]获取,而且需要encodeURIComponent），因为页面一旦分享，微信客户端会在你的链接末尾加入其它参数，如果不是动态获取当前链接，将导致分享后的页面签名失败。</strong></p>
+<p> 在获取js签名的时候需要把当前的url中除hash外的部分做encodeURIComponent后传给微信的api。</p>
+</li>
+<li><p>复制粘贴功能。安卓和ios支持的选中复制元素的api不同，所以需要根据平台做兼容处理。</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">   <span class="function"><span class="keyword">function</span> <span class="title">setClipboardData</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; data &#125; = params;</span><br><span class="line">    <span class="keyword">const</span> isiOS = !!<span class="built_in">window</span>.navigator.userAgent.match(<span class="regexp">/\(i[^;]+;( U;)? CPU.+Mac OS X/</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (data &amp;&amp; <span class="built_in">document</span>.execCommand) &#123;</span><br><span class="line">    <span class="keyword">let</span> textarea = <span class="built_in">document</span>.getElementById(<span class="string">'J_clipboard_textarea'</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!textarea) &#123;</span><br><span class="line">      textarea = <span class="built_in">document</span>.createElement(<span class="string">'input'</span>);</span><br><span class="line">      textarea.id = <span class="string">'J_clipboard_textarea'</span>;</span><br><span class="line">      textarea.style.opacity = <span class="number">0</span>;</span><br><span class="line">      textarea.setAttribute(<span class="string">'value'</span>, data);</span><br><span class="line">      <span class="built_in">document</span>.body.appendChild(textarea);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isiOS) &#123;</span><br><span class="line">      <span class="keyword">const</span> range = <span class="built_in">document</span>.createRange();</span><br><span class="line"></span><br><span class="line">      textarea.contentEditable = <span class="literal">true</span>;</span><br><span class="line">      textarea.readOnly = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">      range.selectNodeContents(textarea);</span><br><span class="line">      <span class="built_in">window</span>.getSelection().addRange(range);</span><br><span class="line">      textarea.setSelectionRange(<span class="number">0</span>, <span class="number">100</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      textarea.select();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">document</span>.execCommand(<span class="string">'copy'</span>)) &#123;</span><br><span class="line">      <span class="keyword">if</span> (isiOS) &#123;</span><br><span class="line">        <span class="built_in">window</span>.getSelection().removeAllRanges();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="built_in">document</span>.body.removeChild(textarea);</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">document</span>.body.removeChild(textarea);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.reject();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>调用window.location.go(-1)时，返回时页面没有刷新（由于我们使用的是vue，可以很清楚的看到created没有执行）。所使用的测试机是一台iphone 6s plus，在别的机型上也有发现，导致在确认订单更换收货地址以及添加收货地址后返回地址列表时都未能及时更新。</p>
+<p> <strong>监听window下的pageshow方法，在pageshow方法中对页面进行reload。</strong></p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'pageshow'</span>, (e) =&gt; &#123;</span><br><span class="line">    <span class="comment">// 当网页来自缓存时，重新reload</span></span><br><span class="line">    <span class="keyword">if</span> (e.persisted) &#123;</span><br><span class="line">        <span class="built_in">window</span>.location.reload();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>以上就是这三个问题的处理办法了。探究过程还是经历了一番曲折的。</p>
+<p>下面听我细细道来……</p>
+<h3 id="公众号二次分享"><a href="#公众号二次分享" class="headerlink" title="公众号二次分享"></a>公众号二次分享</h3><p>公众号网页二次分享的问题，通过charls抓包并且把线上代码复制到本地，然后用charls做MAP LOCAL, 定位到了分享不成功是因为wx.config有问题了，通过设置wx.error看到报出了 invalid signature的错误。当时怀疑是signature不正确，就对比两个获取jsSignature的请求，发现二次分享的页面上多了from=xxx&amp;isappinstalled=0的参数，然后尝试在发请求前把这两个参数去掉，结果仍然报invalid signature错误。</p>
+<p>然后就去找到后端的同事，让他把调用参数给我，然后我自己在<a href="https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign" target="_blank" rel="noopener">微信js接口签名校验工具</a>里测试，测试的结果和接口返回的结果是一样的，于是排除了签名本身的问题。后来就搁置了一段。</p>
+<p>后来还是有点不甘心，就接着在网上找答案。经过多次关键词搜索，终于找到了线索。问题就出现在from=xxx&amp;isappinstalled=0这两个参数上。正是因为这两个参数导致了微信sdk配置signature错误。然后试着在vue的created里对href做检测并替换掉from=xxx&amp;isappinstalled参数，然后重新复制href。</p>
+<p>问题到这里就结束了。</p>
+<h3 id="复制粘贴板安卓和ios兼容性问题"><a href="#复制粘贴板安卓和ios兼容性问题" class="headerlink" title="复制粘贴板安卓和ios兼容性问题"></a>复制粘贴板安卓和ios兼容性问题</h3><p>之前有同事写了复制粘贴板的代码，我只是调用。后来测试的同事发现丝毫没效果。然后我就对复制粘贴板的代码进行了一番改造。刚开始没什么头绪，就去网上找一些成型的代码。后来在stackoverflow发现了一段代码，对原来的代码稍作改造，可以了。然后就兴奋的发上线。然而，事情并没有那么简单…</p>
+<p>在安卓和网页上是好的，但是在ios上document.execCommand(‘copy’)直接返回了false。让我有点郁闷。然后几经查找，发现el.select在ios下是不能运行的，这段代码存在兼容性问题。后来又针对ios写了另外一段复制的代码。最终解决了这一问题。</p>
+<h3 id="window-location-go-1-刷新问题"><a href="#window-location-go-1-刷新问题" class="headerlink" title="window.location.go(-1)刷新问题"></a>window.location.go(-1)刷新问题</h3><p>这个问题发生在一个iphone6sp的测试机上，我本人用的iphone8，并不存在这个问题，页面正常地重新执行了。起初以为只是那台机器有问题，就找了一台iphone6p做测试，发现在6p下是好的。加之还有别的事情要忙p，就先放一边了。</p>
+<p>过了一会儿测试同事说又有一台iphone6也有这个问题，然后觉得这个问题也许并不是某个机型的问题，而是一类机型都存在这个问题，于是就着手处理这个问题。通过map local调试，发现vue的created没有执行，而且vue的组件并没有用keep-alive包裹，于是把问题定位在了页面刷新的问题上，进而定位到了页面返回时调用的window.history.go这个api上。在网上找了一些这个api的信息，然后说的是返回并刷新，但是貌似并没有刷新啊…</p>
+<p>后来经过一番查找和多次试验，终于找到了一个救命稻草————pageshow, 通过监听pageshow，当页面返回调用window.location.go时，会出发pageshow，然后顺利地解决了这个问题。</p>
+<p>大概就是这三个问题了，不过遇到问题也是一种收获，希望每天的工作都能有所得吧。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/微信/">微信</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/07/09/Vue源码分析——new-Vue漫步/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Vue源码分析——new Vue漫步
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/24/Vue源码分析——computed和watch的实现及执行过程分析/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Vue源码分析——computed和watch的实现及执行过程分析</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Vue源码分析——响应式系统 | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="引言在Vue中，我们的基本操作像下面这样：123456789101112131415161718192021&amp;lt;template&amp;gt;&amp;lt;div id=&apos;app&apos; @click=&apos;change&apos;&amp;gt;    &amp;lt;span&amp;gt;&amp;#123;&amp;#123; msg &amp;#125;&amp;#125;&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;/template&amp;gt;&amp;lt;scr">
+<meta name="keywords" content="Vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue源码分析——响应式系统">
+<meta property="og:url" content="https://maxy612.github.io/2019/07/11/Vue源码分析——响应式系统/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="引言在Vue中，我们的基本操作像下面这样：123456789101112131415161718192021&amp;lt;template&amp;gt;&amp;lt;div id=&apos;app&apos; @click=&apos;change&apos;&amp;gt;    &amp;lt;span&amp;gt;&amp;#123;&amp;#123; msg &amp;#125;&amp;#125;&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;/template&amp;gt;&amp;lt;scr">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/10/16bdc24d46eb5186?w=201&h=42&f=svg&s=21059">
+<meta property="og:updated_time" content="2020-05-25T11:31:00.536Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue源码分析——响应式系统">
+<meta name="twitter:description" content="引言在Vue中，我们的基本操作像下面这样：123456789101112131415161718192021&amp;lt;template&amp;gt;&amp;lt;div id=&apos;app&apos; @click=&apos;change&apos;&amp;gt;    &amp;lt;span&amp;gt;&amp;#123;&amp;#123; msg &amp;#125;&amp;#125;&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;/template&amp;gt;&amp;lt;scr">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/7/10/16bdc24d46eb5186?w=201&h=42&f=svg&s=21059">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Vue源码分析——响应式系统" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/11/Vue源码分析——响应式系统/" class="article-date">
+  <time datetime="2019-07-11T14:34:17.000Z" itemprop="datePublished">2019-07-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vue源码分析——响应式系统
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>在Vue中，我们的基本操作像下面这样：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">&lt;div id=<span class="string">'app'</span> @click=<span class="string">'change'</span>&gt;</span><br><span class="line">    &lt;span&gt;&#123;&#123; msg &#125;&#125;&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">export default &#123;</span></span><br><span class="line"><span class="regexp">    data() &#123;</span></span><br><span class="line"><span class="regexp">        return &#123;</span></span><br><span class="line"><span class="regexp">            msg: 'hello,world'</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    </span></span><br><span class="line"><span class="regexp">    methods: &#123;</span></span><br><span class="line"><span class="regexp">        change() &#123;</span></span><br><span class="line"><span class="regexp">            this.msg = 'abcdefg';</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>当我们点击div时，会发现span里边的内容由hello,world变成了abcdefg。这就是Vue响应式系统比较直观的展现了。我们只需要改变数据，就能在视图上看到这种改变。</p>
+<h3 id="抛开Vue，我们怎么样才能实现这样一个系统呢？即我只需要更新数据，就能直接在视图上看到变更后的数据……"><a href="#抛开Vue，我们怎么样才能实现这样一个系统呢？即我只需要更新数据，就能直接在视图上看到变更后的数据……" class="headerlink" title="抛开Vue，我们怎么样才能实现这样一个系统呢？即我只需要更新数据，就能直接在视图上看到变更后的数据……"></a>抛开Vue，我们怎么样才能实现这样一个系统呢？即我只需要更新数据，就能直接在视图上看到变更后的数据……</h3><p>基本思路其实也很简单。下面我们一步步来实现它。首先定义一段html模板。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"ie=edge"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Static Template<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"app"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">      <span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> oApp = <span class="built_in">document</span>.querySelector(<span class="string">".app"</span>);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> data = &#123;</span></span><br><span class="line"><span class="javascript">          msg: <span class="string">""</span></span></span><br><span class="line"><span class="undefined">        &#125;;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> Event = &#123;</span></span><br><span class="line"><span class="undefined">          subs: &#123;&#125;,</span></span><br><span class="line"><span class="undefined">          add(name, fn) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">if</span> (<span class="keyword">this</span>.subs[name]) &#123;</span></span><br><span class="line"><span class="javascript">              <span class="keyword">this</span>.subs[name].push(fn);</span></span><br><span class="line"><span class="javascript">            &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">              <span class="keyword">this</span>.subs[name] = [fn];</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">          &#125;,</span></span><br><span class="line"><span class="undefined">          fire(name, data) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">if</span> (<span class="keyword">this</span>.subs[name]) &#123;</span></span><br><span class="line"><span class="javascript">              <span class="keyword">this</span>.subs[name].forEach(<span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="undefined">                fn(data);</span></span><br><span class="line"><span class="undefined">              &#125;);</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">          &#125;</span></span><br><span class="line"><span class="undefined">        &#125;;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> watcher = <span class="function"><span class="keyword">function</span>(<span class="params">dom</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">          Event.add(<span class="string">"change"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span></span><br><span class="line"><span class="undefined">            dom.textContent = data;</span></span><br><span class="line"><span class="undefined">          &#125;);</span></span><br><span class="line"><span class="undefined">        &#125;;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="built_in">Object</span>.defineProperty(data, <span class="string">"msg"</span>, &#123;</span></span><br><span class="line"><span class="undefined">          get() &#123;</span></span><br><span class="line"><span class="undefined">            watcher(oApp);</span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> <span class="keyword">this</span>.value;</span></span><br><span class="line"><span class="undefined">          &#125;,</span></span><br><span class="line"><span class="undefined">          set(newVal) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>.value = newVal;</span></span><br><span class="line"><span class="javascript">            Event.fire(<span class="string">"change"</span>, newVal);</span></span><br><span class="line"><span class="undefined">          &#125;</span></span><br><span class="line"><span class="undefined">        &#125;);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="comment">// test</span></span></span><br><span class="line"><span class="javascript">        data.msg = <span class="string">"maxy61"</span>;</span></span><br><span class="line"><span class="undefined">        alert(data.msg);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          data.msg = <span class="string">"maxy61209"</span>;</span></span><br><span class="line"><span class="undefined">          alert(data.msg);</span></span><br><span class="line"><span class="undefined">        &#125;, 3000);</span></span><br><span class="line"><span class="undefined">      &#125;;</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>具体的执行效果详见 <a href="https://codesandbox.io/s/static-z8nbe?fontsize=14" target="_blank" rel="noopener"><img src="https://user-gold-cdn.xitu.io/2019/7/10/16bdc24d46eb5186?w=201&amp;h=42&amp;f=svg&amp;s=21059" alt="Edit static"></a></p>
+<h4 id="这里，我们实现了修改data-msg，div的内容随之变化的效果。但是和vue的那种令人舒服的调用模式还是天壤之别。不过尽管简单，但是也是Vue能够做到模板响应数据变化的基本原理。"><a href="#这里，我们实现了修改data-msg，div的内容随之变化的效果。但是和vue的那种令人舒服的调用模式还是天壤之别。不过尽管简单，但是也是Vue能够做到模板响应数据变化的基本原理。" class="headerlink" title="这里，我们实现了修改data.msg，div的内容随之变化的效果。但是和vue的那种令人舒服的调用模式还是天壤之别。不过尽管简单，但是也是Vue能够做到模板响应数据变化的基本原理。"></a>这里，我们实现了修改data.msg，div的内容随之变化的效果。但是和vue的那种令人舒服的调用模式还是天壤之别。不过尽管简单，但是也是Vue能够做到模板响应数据变化的基本原理。</h4><p><em>即通过Object.defineProperty来对数据进行拦截，拦截其get和set操作。在get时，收集关于访问该数据的dom模板信息；当数据改变时，调用之前添加的关于dom模板信息的函数。在Vue中，添加的是watcher实例。而和dom相关的watcher实例叫做渲染watcher。</em></p>
+<h2 id="Vue的响应式系统"><a href="#Vue的响应式系统" class="headerlink" title="Vue的响应式系统"></a>Vue的响应式系统</h2><p>Vue中的双向绑定的实现依赖于其响应式系统。而响应式系统的实现主要靠<strong>数据劫持+发布订阅模式</strong>来实现的。</p>
+<p>在Vue2.0中，数据劫持主要依靠Object.defineProperty来实现的。而发布订阅模式主要表现在Dep和Watcher的关系上。具体代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 来自vue源码中 src/core/observer/index.js中</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  obj: Object,</span></span></span><br><span class="line"><span class="function"><span class="params">  key: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  val: any,</span></span></span><br><span class="line"><span class="function"><span class="params">  customSetter?: ?Function,</span></span></span><br><span class="line"><span class="function"><span class="params">  shallow?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> dep = <span class="keyword">new</span> Dep()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> property = <span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, key)</span><br><span class="line">  <span class="keyword">if</span> (property &amp;&amp; property.configurable === <span class="literal">false</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// cater for pre-defined getter/setters</span></span><br><span class="line">  <span class="keyword">const</span> getter = property &amp;&amp; property.get</span><br><span class="line">  <span class="keyword">const</span> setter = property &amp;&amp; property.set</span><br><span class="line">  <span class="keyword">if</span> ((!getter || setter) &amp;&amp; <span class="built_in">arguments</span>.length === <span class="number">2</span>) &#123;</span><br><span class="line">    val = obj[key]</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> childOb = !shallow &amp;&amp; observe(val)</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    enumerable: <span class="literal">true</span>,</span><br><span class="line">    configurable: <span class="literal">true</span>,</span><br><span class="line">    get: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">const</span> value = getter ? getter.call(obj) : val</span><br><span class="line">      <span class="keyword">if</span> (Dep.target) &#123;</span><br><span class="line">        dep.depend()</span><br><span class="line">        <span class="keyword">if</span> (childOb) &#123;</span><br><span class="line">          childOb.dep.depend()</span><br><span class="line">          <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(value)) &#123;</span><br><span class="line">            dependArray(value)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> value</span><br><span class="line">    &#125;,</span><br><span class="line">    set: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">const</span> value = getter ? getter.call(obj) : val</span><br><span class="line">      <span class="comment">/* eslint-disable no-self-compare */</span></span><br><span class="line">      <span class="keyword">if</span> (newVal === value || (newVal !== newVal &amp;&amp; value !== value)) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">/* eslint-enable no-self-compare */</span></span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; customSetter) &#123;</span><br><span class="line">        customSetter()</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// #7981: for accessor properties without setter</span></span><br><span class="line">      <span class="keyword">if</span> (getter &amp;&amp; !setter) <span class="keyword">return</span></span><br><span class="line">      <span class="keyword">if</span> (setter) &#123;</span><br><span class="line">        setter.call(obj, newVal)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        val = newVal</span><br><span class="line">      &#125;</span><br><span class="line">      childOb = !shallow &amp;&amp; observe(newVal)</span><br><span class="line">      dep.notify()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Vue的数据响应过程主要分为三步：1. defineReactive拦截get和set；2. 收集渲染watcher 3. 数据改变时触发渲染watcher，更新dom。</p>
+<ul>
+<li>在Vue实例初始化时，会对配置项中options的data进行处理。对data进行遍历，然后对其中的每一项都用defineReactive拦截数据的get和set操作，同时为每个数据设置一个依赖收集器dep，来使其变成响应式属性。</li>
+<li>在初始化的最后，会调用vm.$mount操作。该操作最终会生成一个渲染Watcher，渲染watcher在实例化的时候会调用watcher.get方法，于是Dep.target被设置为当前渲染watcher。之后调用vm._update(vm._render(), hydrate)。在这个过程中会触发对数据的访问，进而触发数据的get，于是当前的watcher就被添加到所访问数据dep的subs里。</li>
+<li>当html模板所访问的数据发生变化时，数据的依赖收集器dep会调用notify方法，进而调用之前收集到的渲染watcher。渲染watcher最终再次调用vm._update(vm._render(), hydrate)方法，完成对html模板的更新。</li>
+</ul>
+<p><strong>主要用到了三个构造函数：</strong><br>    Observer,<br>    Dep,<br>    Watcher</p>
+<pre><code>Observer: 一个object对应一个Observer实例，对object下的每一项进行defineReactive（即数据劫持），使其变成响应式属性。
+Dep: 负责收集watcher及发布更新，和数据是一对一的关系
+Watcher: 负责具体的更新操作
+</code></pre><h2 id="Vue数据劫持的缺陷"><a href="#Vue数据劫持的缺陷" class="headerlink" title="Vue数据劫持的缺陷"></a>Vue数据劫持的缺陷</h2><p>然而，Vue2.0的数据劫持也存在一定的问题。当数据是一个数组时，我有这样一段代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=<span class="string">"app"</span>&gt;</span><br><span class="line">    &lt;img width=<span class="string">"25%"</span> src=<span class="string">"./assets/logo.png"</span>&gt;</span><br><span class="line">    &lt;p v-<span class="keyword">for</span>=<span class="string">'val in arr'</span> :key=<span class="string">'val'</span>&gt;&#123;&#123;val&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">export default &#123;</span></span><br><span class="line"><span class="regexp">  name: "App",</span></span><br><span class="line"><span class="regexp">  data() &#123;</span></span><br><span class="line"><span class="regexp">    return &#123;</span></span><br><span class="line"><span class="regexp">      arr: [1, 2, 3, 4, 5]</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;,</span></span><br><span class="line"><span class="regexp">  mounted() &#123;</span></span><br><span class="line"><span class="regexp">    setTimeout(() =&gt; &#123;</span></span><br><span class="line"><span class="regexp">      this.arr[0] = 10;</span></span><br><span class="line"><span class="regexp">    &#125;, 3000);</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style&gt;</span><br><span class="line">#app &#123;</span><br><span class="line">  font-family: <span class="string">"Avenir"</span>, Helvetica, Arial, sans-serif;</span><br><span class="line">  -webkit-font-smoothing: antialiased;</span><br><span class="line">  -moz-osx-font-smoothing: grayscale;</span><br><span class="line">  text-align: center;</span><br><span class="line">  color: #2c3e50;</span><br><span class="line">  margin-top: <span class="number">60</span>px;</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>然而在mounted中的改变并没有任何效果，执行效果详见<a href="https://codesandbox.io/s/vue-template-ygtyb" target="_blank" rel="noopener">codesandbox</a>。Vue2.0对于数组的处理，是修改了Array原型上的几个方法，只有对数据的操作调用了对应的方法，才会具有响应式属性的效果。具体的方法有push, pop, shift, unshift, splice, sort, reverse.<br>当被观察的数组调用了上面这些方法时，才能够触发对应的视图更新。当然，如果数组中有object，当object变化时，视图也能够更新。</p>
+<h4 id="鉴于当前数据劫持方案所暴漏出的缺陷，在Vue3-0中，尤大用ES6推出的Proxy来代替Object-defineProperty。"><a href="#鉴于当前数据劫持方案所暴漏出的缺陷，在Vue3-0中，尤大用ES6推出的Proxy来代替Object-defineProperty。" class="headerlink" title="鉴于当前数据劫持方案所暴漏出的缺陷，在Vue3.0中，尤大用ES6推出的Proxy来代替Object.defineProperty。"></a>鉴于当前数据劫持方案所暴漏出的缺陷，在Vue3.0中，尤大用ES6推出的Proxy来代替Object.defineProperty。</h4><h4 id="Proxy相对于Object-defineProperty，提供了更加全面的数据劫持能力。"><a href="#Proxy相对于Object-defineProperty，提供了更加全面的数据劫持能力。" class="headerlink" title="Proxy相对于Object.defineProperty，提供了更加全面的数据劫持能力。"></a>Proxy相对于Object.defineProperty，提供了更加全面的数据劫持能力。</h4><p>详见<a href="http://es6.ruanyifeng.com/#docs/proxy" target="_blank" rel="noopener">Proxy文档</a>。</p>
+<ul>
+<li>采用Proxy用作数据劫持后，我们可以对整个对象进行数据拦截，而不用再一个个定义属性的key去做拦截。不过如果对象下的属性是对象的话，需要对深层的数据再次生成Proxy实例。</li>
+<li>Proxy提供了get, set, apply, has, construct, deleteProperty, defineProperty等更多的数据劫持方法。</li>
+<li>浏览器原生支持，无需像Object.defineProperty一样在处理数组时通过修改数组原型方法做hack。例如：<a href="https://codesandbox.io/s/static-e9rii" target="_blank" rel="noopener">数组demo</a></li>
+</ul>
+<hr>
+<p>大概就是这样了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/">Vue</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Vue源码分析——虚拟dom如何渲染成真实dom
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/07/09/Vue源码分析——new-Vue漫步/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Vue源码分析——new Vue漫步</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

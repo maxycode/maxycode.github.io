@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>记一次内部作业管理系统开发总结 | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近两周断断续续开发了一个内部的作业管理系统，用不成熟的产品观开发了这个系统，希望自己可以从中得到锻炼，提升自己，个人的项目贡献率在70%左右。由于是内部的作业管理系统，所以暂时不能对外开放链接，期间会贴几张图。主要从一下几个方面来介绍一下：  需求提出 进行产品分析与设计 选定技术架构 设计数据库，数据接口，前端开发同时进行 后期整合，部署 经验与教训   需求提出之前，我们工作室内部新生上传每">
+<meta name="keywords" content="node,全栈">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次内部作业管理系统开发总结">
+<meta property="og:url" content="https://maxy612.github.io/2017/11/05/记一次内部作业管理系统开发总结/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="最近两周断断续续开发了一个内部的作业管理系统，用不成熟的产品观开发了这个系统，希望自己可以从中得到锻炼，提升自己，个人的项目贡献率在70%左右。由于是内部的作业管理系统，所以暂时不能对外开放链接，期间会贴几张图。主要从一下几个方面来介绍一下：  需求提出 进行产品分析与设计 选定技术架构 设计数据库，数据接口，前端开发同时进行 后期整合，部署 经验与教训   需求提出之前，我们工作室内部新生上传每">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://maxy612.github.io/images/api.png">
+<meta property="og:image" content="https://maxy612.github.io/image/client.png">
+<meta property="og:image" content="https://maxy612.github.io/images/client2.png">
+<meta property="og:image" content="https://maxy612.github.io/images/client3.png">
+<meta property="og:image" content="https://maxy612.github.io/images/client4.png">
+<meta property="og:image" content="https://maxy612.github.io/images/client5.png">
+<meta property="og:image" content="https://maxy612.github.io/images/client6.png">
+<meta property="og:image" content="https://maxy612.github.io/images/mgmt.png">
+<meta property="og:image" content="https://maxy612.github.io/images/mgmt2.png">
+<meta property="og:updated_time" content="2020-05-25T11:31:00.538Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记一次内部作业管理系统开发总结">
+<meta name="twitter:description" content="最近两周断断续续开发了一个内部的作业管理系统，用不成熟的产品观开发了这个系统，希望自己可以从中得到锻炼，提升自己，个人的项目贡献率在70%左右。由于是内部的作业管理系统，所以暂时不能对外开放链接，期间会贴几张图。主要从一下几个方面来介绍一下：  需求提出 进行产品分析与设计 选定技术架构 设计数据库，数据接口，前端开发同时进行 后期整合，部署 经验与教训   需求提出之前，我们工作室内部新生上传每">
+<meta name="twitter:image" content="https://maxy612.github.io/images/api.png">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-记一次内部作业管理系统开发总结" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/05/记一次内部作业管理系统开发总结/" class="article-date">
+  <time datetime="2017-11-05T13:56:40.000Z" itemprop="datePublished">2017-11-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/实战/">实战</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      记一次内部作业管理系统开发总结
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近两周断断续续开发了一个内部的作业管理系统，用不成熟的产品观开发了这个系统，希望自己可以从中得到锻炼，提升自己，个人的项目贡献率在70%左右。由于是内部的作业管理系统，所以暂时不能对外开放链接，期间会贴几张图。主要从一下几个方面来介绍一下：</p>
+<ul>
+<li>需求提出</li>
+<li>进行产品分析与设计</li>
+<li>选定技术架构</li>
+<li>设计数据库，数据接口，前端开发同时进行</li>
+<li>后期整合，部署</li>
+<li>经验与教训</li>
+</ul>
+<hr>
+<h2 id="需求提出"><a href="#需求提出" class="headerlink" title="需求提出"></a>需求提出</h2><p>之前，我们工作室内部新生上传每周课后作业都直接通过百度云，可是后来，那个公共的百度云账号历经了好几代人，时常会出现登录验证的情况，但是验证的手机号我们谁都不知道；而且，在传输一些大文件时，百度云还会有限速，没有会员的话只有200k的下载速度，也是心累。</p>
+<p>需求有了，那这个能不能搞呢？答案是当然能。我们下设平面组，策划组和程序组，资源杠杠的。然而，emmmmm，平面组的小伙伴在忙着设计学校的banner，根本没有人来支援我们。策划的话前期提了一些需求，但毕竟没有在互联网公司锻炼过，显然产品观还有待加强。后来，我们程序的自己开ps撸了图。</p>
+<hr>
+<h2 id="产品分析与设计"><a href="#产品分析与设计" class="headerlink" title="产品分析与设计"></a>产品分析与设计</h2><p>通过策划和程序简单进行功能分析后，画出了简单的设计图。在设计图定稿后，大家聚在一起分析了一下设计图以及产品设计中的不足，后来发现，没有实习经验产品观念确实有待加强。逐步完善产品设计以后，又增加了对人员的后台管理系统，以及人员分级，权限控制的功能。<br>最后，我们决定做一个包含作业上传，下载，人员管理的一个简单的作业管理系统。<br>客户端方面，每周培训后，培训的人员（级别为学长学姐），会在第一时间内把本周作业上传到系统；新生进行注册，登录，查看本周的作业并下载，完成作业后上传自己的作业。培训人员随后可以查看自己最近一次上传作业后的时间段内新生上传的作业，并有下载权限作业。<br>管理端方面，每个组都有一个总管理员，负责管理本组的人员，编辑本组人员的信息，调整人员的级别，删除人员。</p>
+<hr>
+<h2 id="选定技术架构"><a href="#选定技术架构" class="headerlink" title="选定技术架构"></a>选定技术架构</h2><p>技术选型主要是我负责的，毕竟之前有过全栈开发的经验和实习经验。前端主要用vue，客户端方面为了锻炼学弟学妹，组件，界面主要以手写为主，管理端页面主要采用iview框架来快速实现；后端使用express + mysql；部署方面，采用centos6.8服务器系统，使用pm2常驻后台。<br>大致的技术架构就是这样的。</p>
+<hr>
+<h2 id="设计数据库，数据接口，前端开发同时进行"><a href="#设计数据库，数据接口，前端开发同时进行" class="headerlink" title="设计数据库，数据接口，前端开发同时进行"></a>设计数据库，数据接口，前端开发同时进行</h2><p>我主要负责后端接口和数据库设计。首先设计了两个表，一个存储用户信息，一个存储文件信息；之后使用rap大致规划出关于用户和文件的接口。见下图：</p>
+<img src="/images/api.png" title="[300]">
+<p>基本的接口就是这样了，后端主要以此进行开发，后期根据实际情况进行微调。<br>前端开发部分，由于之前合作开发的伙伴较少接触vue，所以项目开始前一周让他们看了一个vue的基础视频教程进行熟悉，并把自己之前编写的一些vue代码分享给他们。正式开发的时候，每天晚上我们会一起开发，帮助他们解决vue开发中遇到的问题。<br>后端开发持续了5天，我每天抽出大概3-4个小时用于后端开发和指导前端开发；开发初步完成后，我自己写了简单的页面进行接口测试，测试无误后部署到工作室服务器和自己服务器上并设置了cors，方便前端远程调用。</p>
+<p>后来，开发成员中有的接了新的项目，他原来的正在开发的项目我接收过来继续开发完善。本周末两天，集中进行后续工作的完善。</p>
+<hr>
+<h2 id="后期整合，部署"><a href="#后期整合，部署" class="headerlink" title="后期整合，部署"></a>后期整合，部署</h2><p>由于其他人没有后端开发，前后端调试以及服务器部署的经验，所有的活儿都堆到我这儿了。利用周六周日两天时间，最终完成了这个项目。<br>前端方面，由于是前后端分离，所以前端需要控制所有的页面跳转。在登录页面和主页面分别进行登录态的检验，避免已经登陆还可以停留在登录页面，以及未登录可以停留在主页面的情况。有些样式瞅着也实在别扭，就一并改了。文件上传是个大问题，试了axios的好几种方式进行文件上传，就是上传不上去，出于项目进度的考虑，就先采用了我之前测试接口时采用的jquery的ajax来提交；<br>管理端方面，之前的成员开发到一半被别的项目拽走了，没办法，我只能接着搞了。还缺少人员信息的编辑，删除功能，以及退出登录，修改密码没有搞，于是这些我都顺手搞完了。</p>
+<p>在本地测试没问题了，就开始通过git往服务器端进行部署。考虑到我的服务器硬盘只有40g，故采用学校的云服务器进行部署。之前那个服务器上有部署过其它的项目，所以不能引起端口冲突，通过设置apache实现了反向代理，解决了端口冲突和访问的问题。<br>之后呢，在部署过程中又陆续踩了静态文件访问以及js,css资源文件链接的坑，文件下载的坑，都挺过来了。页面也能大致访问了，现在需要添加成员进行上传测试以及作业访问了。本来以为项目要这么愉快地解决了，没想到这时候遇到了最大的问题：文件上传问题。<br>在本地测试的时候，我用的是我自己的远程服务器，没有过多的安全设置和安全防护系统，一切都很顺利，文件上传正常。可是在学校的云服务器上就不这么乐观了。对云服务器的每一个请求，都会经过学校的安全防护系统，一旦系统觉得这个请求不符合要求，就会被waf拦截，从而无法正常发送请求。之前用ajax做post请求时，也遇到过被拦截的情况，后来用原生表单上传测试后发现是可以的，于是就观察了原生表单的请求参数对ajax的数据请求上传进行对应的修改就可以了，但是之前没有遇到过上传文件的情况，这次真得是被坑惨了。无论怎么设置进行ajax上传文件，都被waf拦截了；后来改成了form表单提交，设置了enctype,依旧被waf识别成了不安全的请求…后来也想了其它的办法，还是不行。最后决定还是部署在自己的服务器上吧，学校的waf，有时候主管的老师也说不好什么时候它会拦截请求。<br>最后在自己服务器上完成了部署测试，一切都没问题，等待后期的投入使用…</p>
+<p>客户端：<br><img src="/image/client.png"><br><img src="/images/client2.png"><br><img src="/images/client3.png"><br><img src="/images/client4.png"><br><img src="/images/client5.png"><br><img src="/images/client6.png"></p>
+<p>管理端：<br><img src="/images/mgmt.png"><br><img src="/images/mgmt2.png"></p>
+<h2 id="经验与教训"><a href="#经验与教训" class="headerlink" title="经验与教训"></a>经验与教训</h2><ol>
+<li>设计到复杂的系统开发，尽量自己搞服务器，不用学校的云服务器，因为你将会遇到比在一般服务器上的更多问题，而这些问题的起因你往往接触不到，找原因的话也无从查起。</li>
+<li>要提前问清项目成员的近期项目情况，对于可能有项目要做的成员，尽量自己搞。</li>
+<li>至于产品方面，要尽量和有产品经验的人进行设计和沟通，以保证业务流程的稳固性和可控性。这次的作业上传与下载，只是以时间为依据，如果用户在不合适的时间上传了作业，将会导致管理员看不到他本周的作业。</li>
+<li>开发方面，想好在动手。这次在开发之前我尽量做到了这一点，但难免还是有想得不周到的地方，导致后期开发过程中需要重新调整之前的规划，好在是微调，不过以后还是尽可能完全想清楚想明白在动手，这样才能事半功倍。</li>
+</ol>
+<hr>
+<p>好了，今天就到这里了，以后有开发的话再继续总结喽……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/全栈/">全栈</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/12/11/常见排序算法/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          常见排序算法（一）
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/11/03/《计算机导论与javascript编程》读书总结/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《计算机导论与javascript编程》读书总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

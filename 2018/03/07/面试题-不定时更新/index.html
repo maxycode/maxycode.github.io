@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>面试题----不定时更新 | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="2018-03-071. 实现一个函数 isObjectEqual 满足以下 Test Case:123456789101112131415161718192021/* test case - expect */isObjectEqual(null) // falseisObjectEqual(null, 0) // falseisObjectEqual(1, true) // falseisOb">
+<meta name="keywords" content="面试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试题----不定时更新">
+<meta property="og:url" content="https://maxy612.github.io/2018/03/07/面试题-不定时更新/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="2018-03-071. 实现一个函数 isObjectEqual 满足以下 Test Case:123456789101112131415161718192021/* test case - expect */isObjectEqual(null) // falseisObjectEqual(null, 0) // falseisObjectEqual(1, true) // falseisOb">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-25T11:31:00.538Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面试题----不定时更新">
+<meta name="twitter:description" content="2018-03-071. 实现一个函数 isObjectEqual 满足以下 Test Case:123456789101112131415161718192021/* test case - expect */isObjectEqual(null) // falseisObjectEqual(null, 0) // falseisObjectEqual(1, true) // falseisOb">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-面试题-不定时更新" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/03/07/面试题-不定时更新/" class="article-date">
+  <time datetime="2018-03-07T12:26:21.000Z" itemprop="datePublished">2018-03-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      面试题----不定时更新
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="2018-03-07"><a href="#2018-03-07" class="headerlink" title="2018-03-07"></a>2018-03-07</h2><h4 id="1-实现一个函数-isObjectEqual-满足以下-Test-Case"><a href="#1-实现一个函数-isObjectEqual-满足以下-Test-Case" class="headerlink" title="1. 实现一个函数 isObjectEqual 满足以下 Test Case:"></a>1. 实现一个函数 isObjectEqual 满足以下 Test Case:</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* test case - expect */</span></span><br><span class="line">isObjectEqual(<span class="literal">null</span>) <span class="comment">// false</span></span><br><span class="line">isObjectEqual(<span class="literal">null</span>, <span class="number">0</span>) <span class="comment">// false</span></span><br><span class="line">isObjectEqual(<span class="number">1</span>, <span class="literal">true</span>) <span class="comment">// false</span></span><br><span class="line">isObjectEqual(<span class="number">1</span>, <span class="string">'1'</span>) <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">isObjectEqual() <span class="comment">// true</span></span><br><span class="line">isObjectEqual(<span class="literal">null</span>, <span class="literal">null</span>) <span class="comment">// true</span></span><br><span class="line">isObjectEqual(<span class="number">0</span>, <span class="number">0</span>) <span class="comment">// true</span></span><br><span class="line">isObjectEqual(<span class="literal">true</span>, <span class="literal">true</span>) <span class="comment">// true</span></span><br><span class="line">isObjectEqual(<span class="string">'1'</span>, <span class="string">'1'</span>) <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line">isObjectEqual([], []) <span class="comment">// true</span></span><br><span class="line">isObjectEqual([<span class="number">1</span>, <span class="number">2</span>], [<span class="number">1</span>, <span class="number">2</span>]) <span class="comment">// true</span></span><br><span class="line">isObjectEqual([<span class="number">1</span>, <span class="number">2</span>], [<span class="number">2</span>, <span class="number">1</span>]) <span class="comment">// false</span></span><br><span class="line">isObjectEqual([<span class="number">1</span>, &#123;&#125;, <span class="literal">null</span>], [<span class="number">1</span>, &#123;&#125;, <span class="literal">null</span>]) <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line">isObjectEqual(&#123;&#125;, &#123;&#125;) <span class="comment">// true</span></span><br><span class="line">isObjectEqual(&#123; <span class="attr">a</span>: <span class="number">1</span> &#125;, &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;) <span class="comment">// true</span></span><br><span class="line">isObjectEqual(&#123; <span class="attr">a</span>: [<span class="number">1</span>, <span class="number">2</span>] &#125;, &#123; <span class="attr">a</span>: [<span class="number">2</span>, <span class="number">1</span>] &#125;) <span class="comment">// false</span></span><br><span class="line">isObjectEqual(&#123; <span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: &#123; <span class="attr">c</span>: [<span class="number">2</span>] &#125; &#125;, &#123; <span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: &#123; <span class="attr">c</span>: [<span class="number">2</span>] &#125; &#125;) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>这道题的要求就是实现一个函数，用来判断两个值是否相等。其中，需要注意的是要能够对对象类型的数据进行深层比较。下面梳理一下题目的要求：</p>
+<ol>
+<li>对于基本类型的值，需要进行全等比较，即用 === 来判断。</li>
+<li>对于对象类型的值：如果是两个数组进行比较，需要判断数组内的每一项及其索引分别对应相等，如果数组内的值是对象类型或数组类型，需要一直进行比较；如果是两个对象进行比较，需要判断对象的属性和值对应相等，如果属性的值不是基本类型的，需要继续比较。<br>下面是我的答案，对于以上情景均能通过。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> isObjectEqual = <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (args.length === <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (args.length === <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (args[<span class="number">0</span>] === <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> isPrimitry = <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> (<span class="keyword">typeof</span> arg !== <span class="string">'object'</span> &amp;&amp; <span class="keyword">typeof</span> arg !== <span class="string">'function'</span>) || arg === <span class="literal">null</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> isObj = <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> arg === <span class="string">'object'</span> &amp;&amp; arg !== <span class="literal">null</span> &amp;&amp; !<span class="built_in">Array</span>.isArray(arg)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> isArr = <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> arg <span class="keyword">instanceof</span> <span class="built_in">Array</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> isObjEqual = <span class="function">(<span class="params">...objs</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> val = <span class="string">''</span>, res = <span class="literal">true</span>,</span><br><span class="line">        prev = objs[<span class="number">0</span>],</span><br><span class="line">        next = objs[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Object</span>.keys(prev).length !== <span class="built_in">Object</span>.keys(next).length) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> prev) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!res) <span class="keyword">return</span> res</span><br><span class="line">      val = prev[key]</span><br><span class="line">      <span class="keyword">if</span> (isPrimitry(val)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (val !== next[key]) res = <span class="literal">false</span></span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isArr(val)) &#123;</span><br><span class="line">        res = isArrEqual(val, next[key])</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isObj(val)) &#123;</span><br><span class="line">        res = isObjEqual(val, next[key])</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> isArrEqual = <span class="function">(<span class="params">...arrs</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> res = <span class="literal">true</span></span><br><span class="line">    arrs[<span class="number">0</span>].forEach(<span class="function">(<span class="params">val, idx</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (!res) <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (isPrimitry(val)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (val !== arrs[<span class="number">1</span>][idx]) res = <span class="literal">false</span></span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isArr(val)) &#123;</span><br><span class="line">        res = isArrEqual(val, arrs[<span class="number">1</span>][idx])</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isObj(val)) &#123;</span><br><span class="line">        res = isObjEqual(val, arrs[<span class="number">1</span>][idx])</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (args.length === <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="comment">// 非对象类型的</span></span><br><span class="line">    <span class="keyword">if</span> (isPrimitry(args[<span class="number">0</span>]) &amp;&amp; isPrimitry(args[<span class="number">1</span>])) &#123;</span><br><span class="line">      <span class="keyword">return</span> args[<span class="number">0</span>] === args[<span class="number">1</span>]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((&#123;&#125;).toString.call(args[<span class="number">0</span>]) !== (&#123;&#125;).toString.call(args[<span class="number">1</span>])) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isArr(args[<span class="number">0</span>]) &amp;&amp; isArr([args[<span class="number">1</span>]])) &#123;</span><br><span class="line">      <span class="keyword">if</span> (args[<span class="number">0</span>].length !== args[<span class="number">1</span>].length) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> isArrEqual(args[<span class="number">0</span>], args[<span class="number">1</span>])</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isObj(args[<span class="number">0</span>]) &amp;&amp; isObj(args[<span class="number">1</span>])) &#123;</span><br><span class="line">      <span class="keyword">return</span> isObjEqual(args[<span class="number">0</span>], args[<span class="number">1</span>])</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-为以下列表添加-click-监听，在点击任一-li-时触发-alert-弹窗，内容为当前li在列表中的索引-进阶-如果-li-的数量特别多应该怎么优化，如果-li-中还含有别的元素应该怎么处理-。"><a href="#2-为以下列表添加-click-监听，在点击任一-li-时触发-alert-弹窗，内容为当前li在列表中的索引-进阶-如果-li-的数量特别多应该怎么优化，如果-li-中还含有别的元素应该怎么处理-。" class="headerlink" title="2. 为以下列表添加 click 监听，在点击任一 li 时触发 alert 弹窗，内容为当前li在列表中的索引(进阶: 如果 li 的数量特别多应该怎么优化，如果 li 中还含有别的元素应该怎么处理)。"></a>2. 为以下列表添加 click 监听，在点击任一 li 时触发 alert 弹窗，内容为当前li在列表中的索引(进阶: 如果 li 的数量特别多应该怎么优化，如果 li 中还含有别的元素应该怎么处理)。</h4><p>这个题简直就是面试题中的经典了，去年暑假面试实习生的时候碰到了这个题，结果不出意外地没做出来，归根到底还是对dom的理解不够。<br>话不多说，just coding…<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"list"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>4<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>5<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>6<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>7<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>8<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>9<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>10<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>1<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>2<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>3<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>4<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>5<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>6<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">      <span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> oUl = <span class="built_in">document</span>.querySelector(<span class="string">'#list'</span>), index,</span></span><br><span class="line"><span class="javascript">            aLi = [].slice.call(oUl.getElementsByTagName(<span class="string">'li'</span>));</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        oUl.addEventListener(<span class="string">'click'</span>, e =&gt; &#123;</span></span><br><span class="line"><span class="undefined">          index = aLi.indexOf(e.target)</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (index &lt; <span class="number">0</span>) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span>;</span></span><br><span class="line"><span class="undefined">          &#125;</span></span><br><span class="line"><span class="undefined">          alert(index)</span></span><br><span class="line"><span class="javascript">        &#125;, <span class="literal">false</span>)</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/面试/">面试</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/03/29/记fullpage使用中的一个小bug/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          记fullpage使用中的一个小bug
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/01/15/Node学习————异步IO/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Node学习————异步IO</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

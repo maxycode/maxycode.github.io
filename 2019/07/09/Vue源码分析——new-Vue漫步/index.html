@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Vue源码分析——new Vue漫步 | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="我们在使用Vue开发项目时，new Vue({ el: ‘#app’, methods: {}, …rest })。那么在这个过程中，发生了什么呢？以web平台为例，vue构造函数有外到内引用顺序依次为：  platforms/web/runtime/index.js(设置了Vue.config上的一些属性，挂载patch, $mount到vue的原型上) core/index.js(为vue挂载">
+<meta name="keywords" content="Vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue源码分析——new Vue漫步">
+<meta property="og:url" content="https://maxy612.github.io/2019/07/09/Vue源码分析——new-Vue漫步/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="我们在使用Vue开发项目时，new Vue({ el: ‘#app’, methods: {}, …rest })。那么在这个过程中，发生了什么呢？以web平台为例，vue构造函数有外到内引用顺序依次为：  platforms/web/runtime/index.js(设置了Vue.config上的一些属性，挂载patch, $mount到vue的原型上) core/index.js(为vue挂载">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-25T11:31:00.535Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue源码分析——new Vue漫步">
+<meta name="twitter:description" content="我们在使用Vue开发项目时，new Vue({ el: ‘#app’, methods: {}, …rest })。那么在这个过程中，发生了什么呢？以web平台为例，vue构造函数有外到内引用顺序依次为：  platforms/web/runtime/index.js(设置了Vue.config上的一些属性，挂载patch, $mount到vue的原型上) core/index.js(为vue挂载">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Vue源码分析——new-Vue漫步" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/09/Vue源码分析——new-Vue漫步/" class="article-date">
+  <time datetime="2019-07-08T16:30:12.000Z" itemprop="datePublished">2019-07-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vue源码分析——new Vue漫步
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我们在使用Vue开发项目时，new Vue({ el: ‘#app’, methods: {}, …rest })。那么在这个过程中，发生了什么呢？<br>以web平台为例，vue构造函数有外到内引用顺序依次为：</p>
+<ol>
+<li>platforms/web/runtime/index.js(设置了Vue.config上的一些属性，挂载<strong>patch</strong>, $mount到vue的原型上)</li>
+<li>core/index.js(为vue挂载一些静态方法即全局api，Vue.extend, Vue.component等。定义\$isServer, $ssrContext到vue的原型上)</li>
+<li>core/instance/index.js(定义Vue构造函数，依次调用initMixin, stateMixin, eventsMixin, lifecycleMixin, renderMixin）</li>
+</ol>
+<hr>
+<p>接下来我们简要分析一下new Vue都做了什么操作。</p>
+<p>在vue的构造函数中，只调用了原型上的_init方法，并传入options。在_init方法中，开始了vue实例化的过程。主要做了以下几件事：</p>
+<ol>
+<li>合并配置</li>
+<li>代理vm</li>
+<li>初始化vm关于生命周期，父子关系，事件处理以及渲染相关的属性</li>
+<li>调用钩子函数beforeCreate</li>
+<li>处理options中的inject和provide配置项</li>
+<li>处理options中的props, methods, data, computed, watch配置项。</li>
+<li>调用钩子函数created</li>
+<li>如果options.el存在，调用vm.\$mount，$mount来自于Vue.prototype。</li>
+</ol>
+<hr>
+<p>下面着重说一些第一步和第六步。第七步会单独作为一个章节来讲。</p>
+<h4 id="合并配置"><a href="#合并配置" class="headerlink" title="合并配置"></a>合并配置</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">vm.$options = mergeOptions(</span><br><span class="line">    resolveConstructorOptions(vm.constructor),</span><br><span class="line">    options || &#123;&#125;,</span><br><span class="line">    vm</span><br><span class="line">)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">resolveConstructorOptions</span> (<span class="params">Ctor: Class&lt;Component&gt;</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 乍一看代码很多，其实new vue时并没有走if分支，获取到Vue.options并返回。</span></span><br><span class="line">  <span class="keyword">let</span> options = Ctor.options</span><br><span class="line">  <span class="keyword">if</span> (Ctor.super) &#123;</span><br><span class="line">    <span class="keyword">const</span> superOptions = resolveConstructorOptions(Ctor.super)</span><br><span class="line">    <span class="keyword">const</span> cachedSuperOptions = Ctor.superOptions</span><br><span class="line">    <span class="keyword">if</span> (superOptions !== cachedSuperOptions) &#123;</span><br><span class="line">      <span class="comment">// super option changed,</span></span><br><span class="line">      <span class="comment">// need to resolve new options.</span></span><br><span class="line">      Ctor.superOptions = superOptions</span><br><span class="line">      <span class="comment">// check if there are any late-modified/attached options (#4976)</span></span><br><span class="line">      <span class="keyword">const</span> modifiedOptions = resolveModifiedOptions(Ctor)</span><br><span class="line">      <span class="comment">// update base extend options</span></span><br><span class="line">      <span class="keyword">if</span> (modifiedOptions) &#123;</span><br><span class="line">        extend(Ctor.extendOptions, modifiedOptions)</span><br><span class="line">      &#125;</span><br><span class="line">      options = Ctor.options = mergeOptions(superOptions, Ctor.extendOptions)</span><br><span class="line">      <span class="keyword">if</span> (options.name) &#123;</span><br><span class="line">        options.components[options.name] = Ctor</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> options</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>mergeOptions合并就是在合并Vue.options和传入的options。下面来看一下mergeOptions:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mergeOptions</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  parent: Object,</span></span></span><br><span class="line"><span class="function"><span class="params">  child: Object,</span></span></span><br><span class="line"><span class="function"><span class="params">  vm?: Component</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Object</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">    checkComponents(child)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> child === <span class="string">'function'</span>) &#123;</span><br><span class="line">    child = child.options</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//  格式化child的props配置项为统一的格式：props: &#123; propsA: &#123; type: xx &#125;, propsB: &#123; type: xx &#125;&#125;</span></span><br><span class="line">  normalizeProps(child, vm)</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 格式化child的inject配置项为统一格式：inject: &#123; injectA: &#123; from: xx &#125; &#125;</span></span><br><span class="line">  normalizeInject(child, vm)</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 格式化child的directives为统一格式： directives: &#123; bind: fn, updaet: fn &#125;</span></span><br><span class="line">  normalizeDirectives(child)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Apply extends and mixins on the child options,</span></span><br><span class="line">  <span class="comment">// but only if it is a raw options object that isn't</span></span><br><span class="line">  <span class="comment">// the result of another mergeOptions call.</span></span><br><span class="line">  <span class="comment">// Only merged options has the _base property.</span></span><br><span class="line">  <span class="comment">// 只有合并过的options有_base属性。</span></span><br><span class="line">  <span class="keyword">if</span> (!child._base) &#123;</span><br><span class="line">    <span class="keyword">if</span> (child.extends) &#123;</span><br><span class="line">      <span class="comment">// 处理options.extends的合并</span></span><br><span class="line">      parent = mergeOptions(parent, child.extends, vm)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (child.mixins) &#123;</span><br><span class="line">      <span class="comment">// 处理child.mixins的合并</span></span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = child.mixins.length; i &lt; l; i++) &#123;</span><br><span class="line">        parent = mergeOptions(parent, child.mixins[i], vm)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> options = &#123;&#125;</span><br><span class="line">  <span class="keyword">let</span> key</span><br><span class="line">  <span class="keyword">for</span> (key <span class="keyword">in</span> parent) &#123;</span><br><span class="line">    mergeField(key)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (key <span class="keyword">in</span> child) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!hasOwn(parent, key)) &#123;</span><br><span class="line">      mergeField(key)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 选择对应的合并策略。不同的key有不同的合并策略，如data, components, </span></span><br><span class="line">  <span class="comment">// filters等。合并策略取自config.optionMergeStrategies中，用户可以自定义合并策略。否则，采用默认的合并策略。</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">mergeField</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> strat = strats[key] || defaultStrat</span><br><span class="line">    options[key] = strat(parent[key], child[key], vm, key)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> options</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行完合并策略后，将合并后的options赋值给vm.$options以供后续使用。</p>
+<hr>
+<h4 id="处理配置项data-props-methods-computed-watch"><a href="#处理配置项data-props-methods-computed-watch" class="headerlink" title="处理配置项data, props, methods, computed, watch"></a>处理配置项data, props, methods, computed, watch</h4><p>对于props. 调用initProps(vm, opts.props)。</p>
+<ol>
+<li>在initProps中，遍历options.props，将props的keys进行收集，放在vm.$options._propKeys上。</li>
+<li>通过defineReactive对props中的值定义在vm._props上并设置成响应式属性，便于当props发生变化时触发对应的watcher更新视图。</li>
+<li>将对vm[key]的访问代理到vm._props[key]上。</li>
+</ol>
+<p>对于methods，调用initMethods(vm, opts.methods)</p>
+<ol>
+<li>对methods的key和value进行检测。对于key，不能是props中的key，不能是vm上的以$或者_开头的属性或方法。对于value，必须为function</li>
+<li>vm[key] = value.bind(vm)</li>
+</ol>
+<p>对于data，调用initData(vm)。</p>
+<ol>
+<li>获取到data中的值</li>
+<li>检查data中的key是否和methods或者props中的有重复，如果重复，给出警告</li>
+<li>将对vm[key]的访问代理到vm._data[key]上</li>
+<li>对获取的data进行遍历并定义为响应式属性，便于之后收集依赖watcher。</li>
+</ol>
+<p>对于computed和watch的处理，可在<a href="https://maxy612.cn/2019/06/24/Vue%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E2%80%94%E2%80%94computed%E5%92%8Cwatch%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8F%8A%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/" target="_blank" rel="noopener">Vue源码分析——computed和watch的实现及执行过程分析</a>查看。</p>
+<hr>
+<p>以上就是对Vue过程的大致分析，之后会针对某个过程进行单独分析。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/">Vue</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/07/11/Vue源码分析——响应式系统/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Vue源码分析——响应式系统
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/24/微信网页开发踩坑记/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">微信网页开发踩坑记</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 16.67px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 13.33px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 13.33px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/21/Vue源码分析——虚拟dom如何渲染成真实dom/">Vue源码分析——虚拟dom如何渲染成真实dom</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/11/Vue源码分析——响应式系统/">Vue源码分析——响应式系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
