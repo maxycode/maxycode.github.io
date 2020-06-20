@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>HTTP发展历史 | maxy612的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="HTTP0.9在Http刚兴起的时候，主要用来传输一些文本文档，页面内容页比较单一。所以早期的HTTP0.9版本中，只支持传输简单的HTML文档。  HTTP1.0随着拨号上网的发展，网速有了一定的提升。支持多类型文件的传输(图片、音频、视频、js、css等)成为HTTP发展的主要诉求。在HTTP1.0版本中，通过引入了请求头和响应头，去帮助浏览器表达它希望收到的资源类型、压缩方式、编码方式及语">
+<meta name="keywords" content="http,面试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP发展历史">
+<meta property="og:url" content="https://maxy612.github.io/2020/06/20/http发展历史/index.html">
+<meta property="og:site_name" content="maxy612的个人博客">
+<meta property="og:description" content="HTTP0.9在Http刚兴起的时候，主要用来传输一些文本文档，页面内容页比较单一。所以早期的HTTP0.9版本中，只支持传输简单的HTML文档。  HTTP1.0随着拨号上网的发展，网速有了一定的提升。支持多类型文件的传输(图片、音频、视频、js、css等)成为HTTP发展的主要诉求。在HTTP1.0版本中，通过引入了请求头和响应头，去帮助浏览器表达它希望收到的资源类型、压缩方式、编码方式及语">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-06-20T04:24:43.610Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP发展历史">
+<meta name="twitter:description" content="HTTP0.9在Http刚兴起的时候，主要用来传输一些文本文档，页面内容页比较单一。所以早期的HTTP0.9版本中，只支持传输简单的HTML文档。  HTTP1.0随着拨号上网的发展，网速有了一定的提升。支持多类型文件的传输(图片、音频、视频、js、css等)成为HTTP发展的主要诉求。在HTTP1.0版本中，通过引入了请求头和响应头，去帮助浏览器表达它希望收到的资源类型、压缩方式、编码方式及语">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner"></div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/interview">面试</a>
+        
+          <a class="main-nav-link" href="/life">生活</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about-md">关于我</a>
+        
+      </nav>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-http发展历史" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/06/20/http发展历史/" class="article-date">
+  <time datetime="2020-06-20T02:32:53.000Z" itemprop="datePublished">2020-06-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      HTTP发展历史
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h3 id="HTTP0-9"><a href="#HTTP0-9" class="headerlink" title="HTTP0.9"></a>HTTP0.9</h3><p>在Http刚兴起的时候，主要用来传输一些文本文档，页面内容页比较单一。所以早期的HTTP0.9版本中，只支持传输简单的HTML文档。</p>
+<hr>
+<h3 id="HTTP1-0"><a href="#HTTP1-0" class="headerlink" title="HTTP1.0"></a>HTTP1.0</h3><p>随着拨号上网的发展，网速有了一定的提升。支持多类型文件的传输(图片、音频、视频、js、css等)成为HTTP发展的主要诉求。在HTTP1.0版本中，通过引入了请求头和响应头，去帮助浏览器表达它希望收到的资源类型、压缩方式、编码方式及语言类型，帮助服务器通知浏览器返回资源的类型、编码方式、压缩方式及语言类型。浏览器通过响应头中对应的字段，判断出对应的文件类型，压缩方式等，进行针对性的处理。</p>
+<p>同时，为了表示对请求的处理结果，即如果请求的资源不存在或者服务器不能处理请求了，也会返回对应的表示，引入了HTTP状态码机制。<br>为了加快浏览器的呈现，节省带宽资源，引入了Cache机制(expires)，对一些资源进行缓存，以便再次获取时能利用本地缓存。</p>
+<p>为了统计用户设备信息，请求中头加入了用户代理(user-agent)字段。</p>
+<hr>
+<h3 id="HTTP1-1"><a href="#HTTP1-1" class="headerlink" title="HTTP1.1"></a>HTTP1.1</h3><p>随着一个页面中引用的资源越来越多，以往的连接方式需要改进。以前，发起一个请求需要通过3次握手建立TCP连接，资源获取完成后，通过四次挥手断开连接。每请求一个资源都要经历这样的过程。在HTTP1.1版本中，为了节省建立TCP连接的开销，引入了持久连接(keep-alive)。即在发起一个请求建立TCP连接后，资源获取完成后不关闭TCP连接，继续利用这个TCP链接获取其它的资源，直到资源获取完毕。</p>
+<p>除此之外，随着技术的发展，有很多资源是动态生成的，直到拿到它的那刻才能够直到它的content-length。所以在该版本中通过chunk transfer增加了对动态内容的支持。<br>随着电子商务、邮件服务等的发展，对安全性的要求也日益突出，所以引入了TLS加密机制，通过CA证书和加密秘钥增强安全性。</p>
+<p>由于HTTP协议是无状态的，服务器不会识别到上次访问的用户，但是对于电子商务等一些需要服务器识别访问者的场景，引入了COOKIE机制。</p>
+<hr>
+<h3 id="HTTP2-0"><a href="#HTTP2-0" class="headerlink" title="HTTP2.0"></a>HTTP2.0</h3><p>在数据传输时，在一个TCP连接中，一个请求发送给服务器，后边的请求会等到该请求返回后才继续向服务器发请求。对于一些关键资源，如果它在请求队列中位置靠后，那在页面中就不能提早的获取到它。而且，在HTTP1.0中，一个域名最多能建立6个TCP连接。在TCP连接发送数据的过程中，发送数据的速度会有一个慢启动的过程。同时，多个TCP连接也会竞争有限的带宽。于是乎，就有了多路复用机制。多路复用机制通过一个域名建立一个TCP长连接，引入二进制分帧层，对发送的请求分成一个个数据包，加上对应的ID编号，不段地发送给服务器。服务器收到数据包后，根据同一请求所属的ID，将数据包进行整合，得出一个完整的请求，然后将数据发送给浏览器。</p>
+<p>之前浏览器和服务器通信，只能是浏览器发起请求，服务器响应请求。在HTTP2.0中加入了服务器主动推送的能力。</p>
+<hr>
+<h3 id="HTTP3-0"><a href="#HTTP3-0" class="headerlink" title="HTTP3.0"></a>HTTP3.0</h3><p>在TCP传输过程中，如果一个数据包丢失，那后续的待传输队列就会等到该数据包重传成功后再继续传输。当丢包率超过一定限度时，HTTP2.0的传输性能倒不如HTTP1.0了。这个叫做TCP队头阻塞。为了处理这个问题，HTTP3.0中将TCP协议换为UDP协议，并在UDP协议和HTTP协议中间加了QUIC协议。在QUIC协议层实现了流量控制和传输可靠性、TLS加密以及多路复用等。</p>
+<hr>
+<h3 id="最后，一起来总结下："><a href="#最后，一起来总结下：" class="headerlink" title="最后，一起来总结下："></a>最后，一起来总结下：</h3><ul>
+<li>http0.9: 只支持传输简单的html文档，用于学术交流</li>
+<li>http1.0: 多类型文件支持(引入请求头和响应头)，状态码，Cache机制，用户代理(user-agent)</li>
+<li>http1.1: 持久连接(keep-alive), 动态内容的支持(content-length， chunk-transfer), cookie和安全机制，虚拟主机支持(请求头中的Host)</li>
+<li>http2: 多路复用(多个TCP竞争带宽、TCP慢启动、队头阻塞), 服务器推送 (丢包率的增加会使得多路复用的效率降低)</li>
+<li>http3: 使用UDP协议替换TCP协议，同时在UDP协议上增加了QUIC协议，处理流量控制和传输可靠性、TLS加密、多路复用等。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/http/">http</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/面试/">面试</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/06/19/charles的原理/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">charles的原理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/实战/">实战</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bug/" style="font-size: 10px;">Bug</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Promise/" style="font-size: 12.5px;">Promise</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/Vue/" style="font-size: 20px;">Vue</a> <a href="/tags/fullpage/" style="font-size: 10px;">fullpage</a> <a href="/tags/http/" style="font-size: 12.5px;">http</a> <a href="/tags/https/" style="font-size: 10px;">https</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/node/" style="font-size: 15px;">node</a> <a href="/tags/全栈/" style="font-size: 10px;">全栈</a> <a href="/tags/前端/" style="font-size: 12.5px;">前端</a> <a href="/tags/博客说明/" style="font-size: 10px;">博客说明</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/异步/" style="font-size: 10px;">异步</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/数据结构与算法/" style="font-size: 12.5px;">数据结构与算法</a> <a href="/tags/浏览器/" style="font-size: 10px;">浏览器</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/面试/" style="font-size: 17.5px;">面试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/06/20/http发展历史/">HTTP发展历史</a>
+          </li>
+        
+          <li>
+            <a href="/2020/06/19/charles的原理/">charles的原理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/25/https为什么比http更安全/">https为什么比http更安全</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/16/从一个日常bug看Vue的列表key及vnode更新策略/">从一个日常bug看Vue的列表key及vnode更新策略</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/14/Vue异步组件探究/">Vue异步组件探究</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer" style="text-align: center;">
+  
+  <div class="outer">
+    <div class="beian">
+      <a href="http://www.miitbeian.gov.cn" target="_blank">豫ICP备16017823号</a> &copy; 2020 maxy612
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/interview" class="mobile-nav-link">面试</a>
+  
+    <a href="/life" class="mobile-nav-link">生活</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about-md" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
