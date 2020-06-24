@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="maxy612的个人博客">
 <meta property="og:description" content="1. https 比 http 安全在哪详见https 比 http 安全在哪  2. mouseover 和 mouseenter 区别mouseover: 鼠标移入事件所绑定的元素及其子元素时触发mouseenter: 鼠标移入事件所绑定的元素时触发（不含子元素）当在一个父元素上添加 mouseover 事件和 mouseenter 事件，分别打印 mouseover 和 mouseenter">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-06-20T02:31:28.041Z">
+<meta property="og:updated_time" content="2020-06-24T09:31:23.905Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试题系列">
 <meta name="twitter:description" content="1. https 比 http 安全在哪详见https 比 http 安全在哪  2. mouseover 和 mouseenter 区别mouseover: 鼠标移入事件所绑定的元素及其子元素时触发mouseenter: 鼠标移入事件所绑定的元素时触发（不含子元素）当在一个父元素上添加 mouseover 事件和 mouseenter 事件，分别打印 mouseover 和 mouseenter">
@@ -136,6 +136,39 @@
 <li>用户向该IP发起请求，负载均衡设备会根据用户的IP地址，请求内容URL，选择一台离用户距离最近且有服务能力的缓存服务器，告诉用户向这台服务器发起请求。</li>
 <li>用户接着向缓存服务器发送请求。缓存服务器收到请求，去查找对应的缓存内容。如果没有找到，会去向它的上级服务器或者到源服务器请求内容到本地，然后再返回给用户。</li>
 </ul>
+<hr>
+<h3 id="8-js中array底层是用什么数据结构实现的"><a href="#8-js中array底层是用什么数据结构实现的" class="headerlink" title="8. js中array底层是用什么数据结构实现的"></a>8. js中array底层是用什么数据结构实现的</h3><p>数组，是一种基础的数据结构。它从0开始，表示一段连续的内存结构，用来存储同类型的数据。</p>
+<p>然而，js中的array与此不同的是，它可以存储不同类型的数据。number, string, object, array, symbol等都可以放在同一个数组中。</p>
+<p>那么js中array底层到底是怎么实现的呢？<br>以chrome v8为例，在v8引擎中，数组的实现是基于快慢数组的。初始化一个数组中，如<strong>var a = [];</strong>，这时v8默认创建一个快数组(fastElement)，会去申请一段连续的内存。<br>当随着数组的push，数组内存空间被占满后，引擎会按照当前数组容量的1.5倍+16去进行扩容。<br>当数组pop时，如果当前数组的内存容量大于数组的length*2时，引擎会标记可以释放的内存空间，在gc中进行垃圾回收，释放内存。</p>
+<p>那么什么时候用慢数组来存储呢？首先，慢数组是基于hashtable的。以哈希表的形式存储在内存中，它不需要连续的空间，但需要维护额外的哈希表。</p>
+<p>慢数组和快数组是可以转化的。根据当前数组的具体情况采用更优的存储方案。<br>当新添加的index的值比现有数组的容量多1024及以上时，快数组转为慢数组结构。</p>
+<hr>
+<h3 id="9-cors设置的几个参数"><a href="#9-cors设置的几个参数" class="headerlink" title="9. cors设置的几个参数"></a>9. cors设置的几个参数</h3><p>一般服务端设置CORS时，通常需要在响应头中设置这样几个参数来告诉浏览器正常返回数据：</p>
+<ul>
+<li>Access-Control-Allow-Origin: 允许跨域的域名</li>
+<li>Access-Control-Allow-Methods: 允许跨域的方法</li>
+<li>Access-Control-Allow-Credentials: 发送跨域请求是否发送COOKIE</li>
+<li>Access-Control-Allow-Headers: 首部字段用于预检请求的响应。其指明了实际请求中允许携带的首部字段。</li>
+</ul>
+<p>在CORS中，分为复杂请求或者简单请求。</p>
+<p>对于简单请求而言，它会直接向服务器发起资源请求。当method为:</p>
+<ul>
+<li>GET</li>
+<li>HEAD</li>
+<li>POST<br>且Content-Type为下列之一时(尤其是对于POST请求)：</li>
+<li>text/plain</li>
+<li>multipart/form-data</li>
+<li>application/x-www-form-urlencoded<br>时，为简单请求，会直接发起请求获取资源。</li>
+</ul>
+<p>在METHOD是PUT，或者DELETE或者Content-Type是application/json时，视为复杂请求。对于复杂请求，需要先发送一个OPTIONS请求作为预检请求，获知服务器是否允许该实际请求。<br>当预检请求通过后，会再发送对应的真实请求给服务器去获取或者操作对应资源。</p>
+<p>对于附带COOKIE的请求(即设置了withCredentials为true，以及设置了Access-Control-Allow-Credentials为true)的情况，Access-Control-Allow-Origin不得设置为*，需要指定为具体的域名。</p>
+<hr>
+<h3 id="10-last-modified作为缓存标识的缺点"><a href="#10-last-modified作为缓存标识的缺点" class="headerlink" title="10. last-modified作为缓存标识的缺点"></a>10. last-modified作为缓存标识的缺点</h3><ol>
+<li>对于1秒内的资源更新，无法更精确判断</li>
+<li>如果开发者先改了一个资源，后来又改了回去。那么访问第一次修改后资源的用户的缓存就失效了。其实文件内容没变，但是文件的更改时间变动了。在这种情况下其实用户的缓存还是有效的，但last-modified就没办法识别了。</li>
+</ol>
+<p>基于此，引入了以文件内容为基础的ETAG缓存字段。</p>
+<hr>
 
       
     </div>
